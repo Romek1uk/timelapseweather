@@ -1,0 +1,350 @@
+\documentclass[12pt]{article}
+\usepackage{a4wide}
+\usepackage{hyperref}
+
+\parindent 0pt
+\parskip 6pt
+
+\begin{document}
+
+\title{Time-Lapse Based Weather Classification}
+\author{Roman Kolacz\\
+rk476@cam.ac.uk}
+\date{\today}
+
+\thispagestyle{empty}
+
+\rightline{\large\emph{Roman Kolacz}}
+\medskip
+\rightline{\large\emph{Downing College}}
+\medskip
+\rightline{\large\emph{rk476}}
+
+\vfil
+
+\centerline{\large Part II Project Proposal}
+\vspace{0.4in}
+\centerline{\Large\bf Time-Lapse Based Weather Classification}
+\vspace{0.3in}
+\centerline{\large \emph{19th October 2014}}
+
+\vfil
+
+{\bf Project Originator:} \emph{Alan Blackwell}
+
+\vspace{0.1in}
+
+{\bf Resources Required:} See attached Project Resource Form
+
+\vspace{0.5in}
+
+{\bf Project Supervisor:} \emph{Advait Sarkar}
+
+\vspace{0.2in}
+
+{\bf Signature:}
+
+\vspace{0.5in}
+
+{\bf Director of Studies:}  \emph{Robert Harle}
+
+\vspace{0.2in}
+
+{\bf Signature:}
+
+\vspace{0.5in}
+
+{\bf Overseers:} \emph{Markus Kuhn}\ and \emph{Neal Lathia}
+
+\vspace{0.2in}
+
+{\bf Signatures:} 
+
+\vfil
+\eject
+
+\section*{Introduction and Description of the Work}
+Time-lapse videos are a relatively unexplored aspect of data visualisation, and have a rather unique property amongst video of being able to hold information about incredibly large periods of time in a relatively small amount of time and space. This is especially true in the case of events which happen slowly and gradually, such as the weather conditions in a particular place over a long period of time.
+
+This project will aim to use time-lapse video as an alternative way of associating time-lapse videos with external data sources by attempting to determine the weather from time-lapse footage and evaluating it against true weather information. This will be demonstrated graphically.
+
+The time-lapse video will be made as part of the project, though any existing video will also suffice for the project.
+
+\subsection*{Literature Review}
+
+\subsubsection*{Classification of Weather Situations on Single Colour Images}
+
+An approach which forms the basis of the weather-labelling per frame is described in the paper "Classification of Weather Situations on Single Colour Images"\cite{classweather}. This paper describes classifying weather using image metrics to be used to assist driving-assistance systems which are heavily dependent on clear conditions. It achieves very accurate results using only two labels (clear and rain), and reasonable accuracy when adding a third, "light rain" label. This project will build on this by adding further labels to the weather classifying, as well as incorporating a cloud-cover measure.
+
+The paper also mentions inaccuracies relating to weather situations containing heavy fog or rain, as visibility is greatly reduced. These will have to be taken into consideration and/or mentioned in the evaluation.
+
+\subsubsection*{Weather Identifying System Based on Vehicle Video Image}
+
+"Weather Identifying System Based on Vehicle Video Image"\cite{weatheridentify}, describes using image comparison to get the weather conditions on a road. A 'background' image is obtained (and updated should a more suitable image be detected), and then weather conditions are inferred by analysing the images obtained by subtracting each of 1000 frames in a video from the background image. Although this technique isn't going to be used to label weather in the approach which will be presented in this project, a similar technique may very well be employed to determine cloud cover percentage.
+
+\subsubsection*{Classification of Road Conditions}
+
+The paper, "Classification of Road Conditions"\cite{classroad}, also applies weather classification to driving conditions. It uses an inverse-least-squares method of inferring the weather from not only images, but a multitude of weather data including temperature, humidity and wind speed. This project will not be using these additional variables, though the results will likely be evaluated with their aid.
+
+\subsubsection*{Time-Lapse Photography Applied to Educational Videos}
+
+Although unrelated to weather classifying, "Time-Lapse Photography Applied to Educational Videos"\cite{educational} explores applying time-lapse videos to educational videos to aid with analysing long term trends and discarding short term 'noise'. This is comparable to what this project is aiming to achieve through the use of time-lapse video.
+
+\subsubsection*{Two-Class Weather Classification}
+
+"Two-Class Weather Classification"\cite{twoclass} also uses image processing techniques to classify weather into two distinct labels: cloud and sun. It initially explores analysing pixel brightness distribution, which appears to fail in a general case. The paper then explores various techniques for looking for signs of a sunny day. One such technique involves detecting the sky in the image (something which this project may well have to incorporate) and checking for a blue hue. The paper also explores using edge detection to find shadows, which is found to be very vulnerable to false positives in a cloudy case; as well detecting bright reflections in reflective objects- two techniques which will not be employed in this project, though may be useful for discussion purposes.
+
+\section*{Resources Required}
+\begin{itemize}
+	\item Obtaining the data will require a Raspberry Pi\cite{rpi} with an attached camera module.
+	\item Depending on the frequency of frame capture and resolution, some additional disk space may be required to store the data.
+	\item OpenCV\cite{ocv} will need to be installed.
+	\item If the machine-learning part of the project is to be undertaken, Weka\cite{weka} will need to be installed.
+\end{itemize}
+
+
+\section*{Substance and Structure of the Project}
+The OpenCV library will be used to obtain the following image metrics from individual frames:
+\begin{itemize}
+	\item Brightness
+	\item Average Hue/Saturation
+	\item Brightness curve
+\end{itemize}
+This data will then be analysed and compared to the images so that a set of hard-coded rules can be derived which will determine which weather label can be attached to each image. 
+
+Frames in which the sun is shining are likely to have have brightness curves with very high peaks and low troughs, in contrast to relatively flat curves of cloudy images. This would come as a result of shadow and reflections skewing the curve in sunlit images, whereas cloudy images will be generally more evenly (and dimly) lit as a result of the clouds dispersing and absorbing sunlight.
+
+Snow will likely cause the entirety of the image to generally appear brighter than expected and with less saturation, as a result of the reflective properties of snow. 
+
+Rain will likely be the most challenging weather label to place, as the conditions will decrease the brightness of the frame in a similar way to dawn and dusk would, and otherwise be relatively similar to cloudy conditions. One potential situation to look out for would be reflections in puddles, though these aren't guaranteed to happen, and may have insignificant effects on the image even if they do. A probable situation is that the saturation of the frame decreases and the hue shifts towards a blue/grey shade, though this will need to be explored during the progress of the project, and the accuracy of which will need to be heavily analysed.
+
+The cloud cover will be inferred by isolating the sky from the rest of the image, and then analysing the brightness and hue of the relevant part of each frame. 
+
+\subsection*{Evaluation}
+
+The weather classifier will need to be evaluated alongside real weather data. This will be obtained from forecast.io\cite{forecast}, which contains an API\cite{forecastapi} for obtaining precise (latitude and longitude) weather information. This is free to use for up to 1000 polls a day, which will easily suffice for this project.
+
+The data will be split into training and testing sections with a 4:1 split respectively, as (especially in the extension case involving machine learning), data which is used to train the classifier will have a positively skewed accuracy. The testing section will be used to evaluate the classifier.
+
+Each aspect of the classifier will then be evaluated separately.
+
+\subsubsection*{Weather Labels}
+
+The weather labels, being discrete sets of data, will be tested for accuracy by simply calculating the percentage of correctly assigned labels. A truth matrix will be created to highlight the concentration of errors on a per-case basis.
+
+\subsubsection*{Cloud Cover}
+
+The cloud cover will be calculated as a percentage and compared to the real value which is available from the Forecast API. The accuracy of this will be manually checked, given that a camera pointing outside will cover a relatively large section of the sky. The accuracy of this aspect of the classifier will be calculated using root mean square error.
+
+\subsubsection*{Sunset and Sunrise}
+
+The sunset and sunrise times will be tested for accuracy by also using root mean square error, using the difference between actual and inferred time, in minutes.
+
+\section*{Extensions}
+Depending on the progress of the project at specific points, the following additional features may be implemented, in order of priority:
+\begin{itemize}
+	\item Multiple images per frame may be taken at varying exposure and gain settings as a large difference in luminance within a single frame (which will likely happen on a sunny day), may make other parts of the image unnaturally dark should the camera use automatic settings.
+	\item Weather prediction and likely trends can be derived from existing data. Information predicted in such a way can be compared to inferred data and accurate data when the related time period passes.
+	\item Machine learning can be used instead of hard-coded rules on determining weather, as both the image metrics and accurate weather information will be available as a learning data set. Weka will be used for this.
+\end{itemize}
+
+\section*{Success Criterion}
+
+For the project to be deemed a success the following items must be
+successfully completed.
+
+\begin{enumerate}
+
+\item The sunrise and sunset times can be inferred from a time lapse video.
+
+\item The weather in each frame can be inferred and labelled one of the following:
+	\begin{itemize}
+		\item Clear
+		\item Cloud
+		\item Rain
+		\item Snow
+	\end{itemize}
+	
+\item The cloud cover can be inferred from each frame within the video.
+
+\item A measure of confidence can be assigned to each of the above criteria to reflect the probability of incorrectly inferred data.
+
+\item The above data can be graphically demonstrated and shown to work to some degree of accuracy.
+
+\item The accuracy of the data must be evaluated.
+
+\item The dissertation must be planned and written.
+
+\end{enumerate}
+
+\section*{Timetable and Milestones}
+
+\subsection*{24th October - 6th November}%{Weeks 1 and 2}
+
+Research how to use the Raspberry Pi and camera module to take time lapse videos, and set up a fixed position for it to gather data from for the rest of the project.
+
+Research the OpenCV library and how it can be used to gather the data required, as well as how the data gathered can be used to infer the conditions described in the success criteria.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item Produce a short, not necessarily usable time lapse video using the Raspberry Pi.
+	\item Begin gathering data for remainder of project.
+	\item Found/made a relatively hassle free mount for the Raspberry Pi and camera.
+	\item Produce some small demo's and examples using OpenCV.
+\end{itemize}
+
+\subsection*{7th November - 18th December}%{Weeks 3 to 6}
+
+Use the research gathered to design and implement algorithms which can establish weather conditions from frames based on hard coded rules.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item A working library for inferring weather conditions from images.
+	\item Tests written for said library.
+\end{itemize}
+
+\subsubsection*{Key Dates}
+\begin{itemize}
+	\item NPR End: 14th December
+\end{itemize}
+
+\subsection*{19th December - 1st January}%{Weeks 7 and 8}
+
+Review algorithms and adjust timetable if further tests and research is needed for a working, usable library.
+
+Implement the library to the thus-gathered time lapse video, and design a graphical demonstration program to view the data through.
+Assign a confidence value to each frame to reflect the chance of a correct result.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item A graphical visualisation of the data extracted from the time lapse video.
+	\item A confidence measure for the weather at each given frame.
+\end{itemize}
+
+\subsection*{2nd January - 29th January}%{Weeks 9 to 12}
+
+Work on evaluating the data by gathering accurate weather information for each obtained frame and automatically labelling them with said data. 
+Compare some specific instances to vaguely gauge the accuracy of the program.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item Accurate data gathered for evaluation.
+	\item A general idea of how accurate the data is.
+\end{itemize}
+
+\subsubsection*{Key Dates}
+\begin{itemize}
+	\item NPR Start: 4th January
+\end{itemize}
+
+\subsection*{30th January - 19th February}%{Weeks 13 to 15}
+
+Work on more formally evaluating the accuracy of the data, along with the reliability of the confidence measure assigned to each piece of data.
+This can also be graphically shown.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item Complete data on accuracy of algorithm.
+	\item Graphical visualisation of said accuracy.
+\end{itemize}
+
+\subsubsection*{Key Dates}
+\begin{itemize}
+	\item Progress Report Deadline: 30th January
+	\item Progress Report Presentation: 5th, 6th, 9th or 10th February
+	\item Dissertation Lecture: 11th February
+\end{itemize}
+
+\subsection*{20th February - 5th March}%{Weeks 16 and 17}
+
+Review work and adjust timetable if needed. Enhance test program for a more friendly UI which is more suitable for demonstrative purposes.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item Program should be fully complete, usable and presentable.
+\end{itemize}
+
+\subsection*{6th March - 2nd April}%{Weeks 18 to 21}
+
+Write dissertation. Notes should have been gathered throughout the previous stages, so these should be read first for familiarisation of the previous weeks of work.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item First draft of dissertation should be complete.
+\end{itemize}
+
+\subsubsection*{Key Dates}
+\begin{itemize}
+	\item NPR End: 15th March
+\end{itemize}
+
+\subsection*{3rd April Onwards}%{Weeks 22 onwards}
+
+Take a look at what needs attention, if anything, and work on that. Look through dissertation and ensure it's up to submission standards.
+
+\subsubsection*{Milestones}
+\begin{itemize}
+	\item Final dissertation should be complete.
+\end{itemize}
+
+\subsubsection*{Key Dates}
+\begin{itemize}
+	\item NPR Start: 12th April
+	\item Project Deadline: 15th May
+	\item Supervisor Report Deadline: 20th May
+	\item Exams: 2nd-4th June
+	\item Viva Announcement: 12th June
+	\item Vivas: 15th June
+	\item NPR End: 21st June
+\end{itemize}
+
+\begin{thebibliography}{widest-label}
+  \bibitem{rpi}
+        Raspberry Pi Computer 
+        \\ \small\url{http://www.raspberrypi.org/}
+ 
+  \bibitem{ocv}
+        Open CV Library 
+        \\ \small\url{http://opencv.org/}
+ 
+  \bibitem{weka}
+        Weka 3 Library
+        \\ \small\url{http://www.cs.waikato.ac.nz/ml/weka/}
+ 
+  \bibitem{classweather}
+  		Classification of Weather Situations on Single Colour Images
+  		\\ Martin Roser and Frank Moosmann, 2008
+  		\\ \small\url{http://www.mrt.kit.edu/z/publ/download/Roser_al2008iv.pdf}
+ 
+  \bibitem{weatheridentify}
+  		Weather Identifying System Based On Vehicle Video Image
+  		\\ Hong Jun Song, 2011
+  		\\ \small\url{http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5970722}
+  		
+  \bibitem{classroad}
+  		Classification of Road Conditions
+  		\\ Patrik Jonsson, 2011
+  		\\ \small\url{http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6059917}
+  		
+  \bibitem{educational}
+  		Time-Lapse Photography Applied To Educational Videos
+  		\\ Wei Liu and Hongyun Li, 2012
+  		\\ \small\url{http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6202303&tag=1}
+  		
+  \bibitem{twoclass}
+  		Two-Class Weather Classification
+  		\\ Cweu Lu, Di Lin, Jiayi Jia and Chi-Keung Tang, 2014
+  		\\ \small\url{http://www.cse.cuhk.edu.hk/leojia/papers/weatherclassify_cvpr14.pdf}
+  		
+  \bibitem{forecast}
+  		Forecast.io
+  		\\ \small\url{https://forecast.io/}
+  		
+  \bibitem{forecastapi}
+  		Forecast.io Developers API
+  		\\ \small\url{https://developer.forecast.io/docs/v2}
+  		
+\end{thebibliography}
+
+\end{document}
+

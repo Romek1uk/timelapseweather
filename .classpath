@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="intro/weather/" kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Romek/Dropbox/Part II/project/lib/ForecastIOLib-1.5.1-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Romek/Dropbox/Part II/project/lib/opencv-249.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
