@@ -10,14 +10,43 @@ import javax.imageio.ImageIO;
 
 public class ImageMetricGetter
 {
+	
 	private static byte[] getPixels(BufferedImage image)
 	{
 		return ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 	}
 	
+	private static int getPixelLength(BufferedImage image)
+	{
+		return image.getAlphaRaster() == null ? 3 : 4;
+	}
+	
+	public static int[] brightnessHistogram(BufferedImage image)
+	{
+		int[] ret = new int[101]; // 0-100%
+		int pixellength = getPixelLength(image);
+		byte[] pixels = getPixels(image);
+		
+		for (int i = 0; i < pixels.length; i += 3)
+		{
+			if (pixellength == 4)
+			{
+				i++;
+			}
+			
+			int r = pixels[i] & 0xFF;
+			int g = pixels[i + 1] & 0xFF;
+			int b = pixels[i + 2] & 0xFF;
+			
+			ret[(int)((0.2126 * r + 0.7152 * g + 0.0722 * b)/2.55)]++;
+		}
+		
+		return ret;
+	}
+	
 	public static Color averageColour(BufferedImage image)
 	{
-		int pixellength = image.getAlphaRaster() == null ? 3 : 4;
+		int pixellength = getPixelLength(image);
 		
 		byte[] pixels = getPixels(image);
 		
@@ -39,10 +68,10 @@ public class ImageMetricGetter
 		
 		return new Color(r/pixels.length*pixellength, g/pixels.length*pixellength, b/pixels.length*pixellength);
 	}
-	
+		
 	public static double averageBrightness(BufferedImage image)
 	{
-		int pixellength = image.getAlphaRaster() == null ? 3 : 4;
+		int pixellength = getPixelLength(image);
 		
 		byte[] pixels = getPixels(image);
 		
@@ -83,5 +112,7 @@ public class ImageMetricGetter
 		double brightness = averageBrightness(image);
 		System.out.println(brightness);
 		System.out.println(averageColour(image));
+		
+		System.out.println(brightnessHistogram(image));
 	}
 }
