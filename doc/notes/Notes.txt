@@ -1,0 +1,20 @@
+7/11/2014:
+- Raspberry Pi isn't working... Ordered a new one.
+
+9/11/2014:
+- OpenCV is unnecessary for what we're doing (and doesn't provide what we want by default)
+- Easier to just get the metrics myself
+- Wrote functions to get brightness/colour
+
+10/11/2014:
+- Wrote function to get brightness histogram
+
+14/11/2014:
+- Basic plan for code structure
+- BrightnessHistogram now goes to 255 rather than 100.
+- Created imagemetrics package
+  - Brightness
+  - Histogram
+  - Hue
+  - Image
+- Started on the Weather part (done the constructor)
