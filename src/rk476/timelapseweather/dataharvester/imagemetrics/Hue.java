@@ -25,6 +25,11 @@ public final class Hue {
 		return new Color(r / pixels.length * pixellength, g / pixels.length
 				* pixellength, b / pixels.length * pixellength);
 	}
+	
+	public static String getAverageHueString(Image image)
+	{
+		return "#" + String.format("%06x", getAverageHue(image).getRGB() & 0x00FFFFFF);
+	}
 
 	public static Histogram getRedHistogram(Image image) {
 		Histogram ret = new Histogram();

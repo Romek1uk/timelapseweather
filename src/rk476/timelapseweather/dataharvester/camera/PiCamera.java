@@ -11,7 +11,6 @@ public class PiCamera {
 			Process process = Runtime.getRuntime().exec(command);
 			process.waitFor();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
