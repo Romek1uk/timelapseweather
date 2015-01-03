@@ -27,6 +27,9 @@ public class CsvWriter {
 		_writer.append("predicted sunrise,");
 		_writer.append("predicted sunset,");
 		_writer.append("predicted cloud cover,");
+		_writer.append("predicted precipitation,");
+		_writer.append("predicted temperature,");
+		_writer.append("predicted visibility,");
 
 		// Image metrics
 		for (int i = 0; i < 256; i++) {
@@ -70,6 +73,9 @@ public class CsvWriter {
 		_writer.append(data.getPredictedSunrise() + ",");
 		_writer.append(data.getPredictedSunset() + ",");
 		_writer.append(data.getPredictedCloudCover() + ",");
+		_writer.append(data.getPredictedPrecipitation() + ",");
+		_writer.append(data.getPredictedTemperature() + ",");
+		_writer.append(data.getPredictedVisibility() + ",");
 		
 		for (int i = 0; i < 256; i++) {
 			_writer.append(data.getBrightnessHistogram().getData(i) + ",");
@@ -106,7 +112,7 @@ public class CsvWriter {
 				generateHeaders();
 			}
 			else {
-				_writer = new FileWriter(file);
+				_writer = new FileWriter(file, true);
 			}
 			
 			System.out.println("writer created");

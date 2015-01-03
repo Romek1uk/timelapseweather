@@ -17,6 +17,8 @@ import rk476.timelapseweather.dataharvester.weather.Forecast;
 
 public class DataHarvester extends TimerTask {
 
+	private static final int TIMEOUT = 5 * 60 * 1000;
+
 	private static Date getNext5MinuteMark() {
 		Calendar now = Calendar.getInstance();
 		int mod = now.get(Calendar.MINUTE) % 5;
@@ -28,8 +30,9 @@ public class DataHarvester extends TimerTask {
 		System.out.println("Start");
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new DataHarvester(), getNext5MinuteMark(),
-				5 * 60 * 1000);
-		System.out.println("Next 5 minute mark is: " + getFormattedDateTime(getNext5MinuteMark()));
+				TIMEOUT);
+		System.out.println("Next 5 minute mark is: "
+				+ getFormattedDateTime(getNext5MinuteMark()));
 	}
 
 	private static String getFormattedDateTime(Date date) {
@@ -51,14 +54,14 @@ public class DataHarvester extends TimerTask {
 	public void run() {
 		Date datetime = new Date();
 		CsvData data = new CsvData();
-		
+
 		System.out.println("Enter run");
 
 		new PiCamera().capture(getFormattedDateTime(datetime) + ".jpg");
 		data.setName(getFormattedDateTime(datetime) + ".jpg");
 		data.setDate(getFormattedDate(datetime));
 		data.setTime(getFormattedTime(datetime));
-		
+
 		System.out.println("Captured");
 
 		Forecast forecast = new Forecast(getFormattedDateTime(datetime));
@@ -68,16 +71,19 @@ public class DataHarvester extends TimerTask {
 		data.setActualCloudCover(String.valueOf(forecast.getCloudCover()));
 		data.setActualPrecipitation(String.valueOf(forecast.getPrecipitation()));
 		data.setActualTemperature(String.valueOf(forecast.getTemperature()));
-	//	data.setActualVisibility(String.valueOf(forecast.getVisibility()));
+		// data.setActualVisibility(String.valueOf(forecast.getVisibility()));
 
 		System.out.println("weather gotten");
-		
+
 		// TODO: this.
 		data.setPredictedCloudCover("--");
 		data.setPredictedIcon("--");
 		data.setPredictedSunrise("--");
 		data.setPredictedSunset("--");
-		
+		data.setPredictedPrecipitation("--");
+		data.setPredictedTemperature("--");
+		data.setPredictedVisibility("--");
+
 		System.out.println("nulls set");
 
 		Image image = null;
@@ -88,25 +94,24 @@ public class DataHarvester extends TimerTask {
 			// (maybe a race condition if the picture command is asynchronous)
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("image retrieved");
 
-		data.setAverageHue(Hue.getAverageHue(image).toString()); // TODO: Change
-																	// toString
+		data.setAverageHue(Hue.getAverageHueString(image)); 
 		data.setBrightnessHistogram(Brightness.getBrightnessHistogram(image));
 		data.setRedHistogram(Hue.getRedHistogram(image));
 		data.setBlueHistogram(Hue.getBlueHistogram(image));
 		data.setGreenHistogram(Hue.getGreenHistogram(image));
 
 		System.out.println("data set");
-		
+
 		try {
 			new CsvWriter("data.csv").addEntry(data);
 			System.out.println("Added entry");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("end");
 	}
 

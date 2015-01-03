@@ -19,12 +19,39 @@ public class CsvData {
 	private String _predictedSunrise;
 	private String _predictedSunset;
 	private String _predictedCloudCover;
+	private String _predictedPrecipitation;
+	private String _predictedTemperature;
+	private String _predictedVisibility;
 
 	private Histogram _brightnessHistogram;
 	private Histogram _redHistogram;
 	private Histogram _greenHistogram;
 	private Histogram _blueHistogram;
 	private String _averagehue;
+	
+	public String getPredictedPrecipitation() {
+		return _predictedPrecipitation;
+	}
+
+	public void setPredictedPrecipitation(String predictedPrecipitation) {
+		_predictedPrecipitation = predictedPrecipitation;
+	}
+
+	public String getPredictedTemperature() {
+		return _predictedTemperature;
+	}
+
+	public void setPredictedTemperature(String predictedTemperature) {
+		_predictedTemperature = predictedTemperature;
+	}
+
+	public String getPredictedVisibility() {
+		return _predictedVisibility;
+	}
+
+	public void setPredictedVisibility(String predictedVisibility) {
+		_predictedVisibility = predictedVisibility;
+	}
 
 	public Histogram getBrightnessHistogram() {
 		return _brightnessHistogram;
