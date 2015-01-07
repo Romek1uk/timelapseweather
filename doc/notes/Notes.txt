@@ -18,3 +18,11 @@
   - Hue
   - Image
 - Started on the Weather part (done the constructor)
+
+07/12/2014:
+- Oops- no log in a while
+- Everything will be machine learning, no more fixed classifier
+- Using metrics to teach weka
+- csv file has to be manipulated heavily to be used
+- RandomForest doesn't work on string attributes
+- All csv files require headers

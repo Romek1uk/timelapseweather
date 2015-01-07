@@ -55,6 +55,13 @@ public class CsvWriter {
 		
 		System.out.println("Saved");
 	}
+	
+	public void addLine(String line) throws IOException {
+		if (!line.endsWith("\n"))
+			line += "\n";
+		_writer.append(line);
+		_writer.flush();
+	}
 
 	public void addEntry(CsvData data) throws IOException {
 		_writer.append(data.getName() + ",");
