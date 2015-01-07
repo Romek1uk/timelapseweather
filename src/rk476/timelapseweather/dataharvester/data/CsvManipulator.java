@@ -1,40 +1,67 @@
 package rk476.timelapseweather.dataharvester.data;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.File;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Random;
 
 //TODO: This entire thing can be made more efficient by removing whole file read/writes for each individual operation.
 // -- Mark the operations and then do them in a single batch
 // -- Temp file is pretty stupid.
 
-public class CsvManipulator implements Closeable {
+public class CsvManipulator {
 
 	private String _inputFile;
-	private String _outputFile;
-	private String _tempFile;
 
 	public String getInputFile() {
 		return _inputFile;
 	}
 
-	public String getOutputFile() {
-		return _outputFile;
-	}
-
-	public String getTempFile() {
-		return _tempFile;
-	}
-
 	private static Random _random = new Random();
 
-	public static void splitCsvFile(String inputFile, int quantity,
+	public CsvManipulator(String file) {
+		_inputFile = file;
+	}
+
+	public void replaceEntryOnLine(int row, int column, String value) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(_inputFile));		
+		String content = "";
+		
+		row = row + 1; // ignore headers
+		
+		ArrayList<String> lines = new ArrayList<String>();
+		
+		String line;
+		while ((line = reader.readLine()) != null) {
+			lines.add(line);
+		}
+		
+		reader.close();
+		
+		content = lines.get(row);
+		
+		String[] split = content.split(",");
+		split[column] = value;
+		
+		content = "";
+		for(String s : split) {
+			content += s + ",";
+		}
+		content = content.substring(0, content.length() - 1); // remove last comma
+		
+		lines.set(row, content);
+				
+		BufferedWriter writer = new BufferedWriter(new FileWriter(_inputFile));
+		for (String s : lines) {
+			writer.write(s + "\n");
+		}
+		writer.close();
+	}
+	
+	public void splitCsvFile(int quantity,
 			String newDirectory) throws IOException {
 		// create files
 		CsvWriter[] trainfiles = new CsvWriter[quantity];
@@ -45,7 +72,7 @@ public class CsvManipulator implements Closeable {
 			testfiles[i] = new CsvWriter(newDirectory + "test" + i + ".csv");
 		}
 
-		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
 
 		String line;
 		while ((line = reader.readLine()) != null) {
@@ -53,18 +80,12 @@ public class CsvManipulator implements Closeable {
 
 			for (int i = 0; i < quantity; i++) {
 				if (i == val)
-					trainfiles[val].addLine(line);
-				else
 					testfiles[val].addLine(line);
+				else
+					trainfiles[val].addLine(line);
 			}
 		}
 
 		reader.close();
 	}
-
-	@Override
-	public void close() throws IOException {
-		Files.delete(new File(_tempFile).toPath());
-	}
-
 }

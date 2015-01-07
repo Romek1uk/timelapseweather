@@ -48,12 +48,8 @@ public class CsvWriter {
 		_writer.append("average hue");
 
 		_writer.append("\n");
-		
-		System.out.println("Made headers");
-		
+				
 		_writer.flush();
-		
-		System.out.println("Saved");
 	}
 	
 	public void addLine(String line) throws IOException {
@@ -99,21 +95,14 @@ public class CsvWriter {
 		
 		_writer.append(data.getAverageHue() + "\n");
 		
-		System.out.println("Made entry");
-		
 		_writer.flush();
-		
-		System.out.println("Saved");
 	}
 
 	public CsvWriter(String fileName) {
 		File file = new File(fileName);
-
-		System.out.println("file");
 		
 		try {
 			if (!file.exists()) {
-				System.out.println("exists");
 				_writer = new FileWriter(file);
 				
 				generateHeaders();
@@ -121,8 +110,6 @@ public class CsvWriter {
 			else {
 				_writer = new FileWriter(file, true);
 			}
-			
-			System.out.println("writer created");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
