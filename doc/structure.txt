@@ -1,0 +1,42 @@
+﻿- Cover Sheet
+- Proforma
+- Decleration of Originality
+- Table of Contents
+- Introduction
+- - What is time lapse/why it's useful
+- - What this project aims to accomplish 
+- - Literature review summary (?)
+- Preperation
+- - Requirements analysis (as detailed in pink booklet)
+- - - hardware/libraries (Could also go into implementation)
+- - Data gathering (Could also go into implementation)
+- Implementation
+- - Machine learning
+- - Gathering image data (brightness, rgb, etc)
+- - csv files
+- - sanity checks
+- Evaluation
+- - Explain cross-validation and why it's better than simple split
+- - (Will see when I get numbers)
+- - How accurate it is
+- - why/why not it's accurate
+- - Look at literature review and how they evaluated their work
+- - - what metrics, etc
+- Conclusions
+- - Changes for next time
+- Bibliography
+- Appendices
+- Index
+- Proposal
+
+# Lots of pictures – one figure on every page (ish), so that everything that can be illustrated, is illustrated. Examiners read briefly, so pictures are well appreciated.
+
+# 2.5k words for each of implementation and evaluation
+# 2k each for intro and prep
+# 1k for conclusion
+
+# don't overwrite- be concise!
+# short dissertations generally get marked better anyway (easier to understand and less bog-downing)
+
+# start with preperation.
+# introduction should be written LAST, as a question to the conclusionc

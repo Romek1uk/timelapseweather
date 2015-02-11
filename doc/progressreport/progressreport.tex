@@ -1,0 +1,40 @@
+\documentclass[12pt]{article}
+\usepackage{a4wide}
+
+\begin{document}
+
+\title{Progress Report}
+\author{Roman Kolacz}
+
+\noindent
+{\large\bf Progress Report}
+
+\bigskip
+
+\noindent
+{\bf Name:} Roman Kolacz \\
+{\bf Email:} rk476@cam.ac.uk \\
+{\bf Project Title:} Time-Lapse Based Weather Classification \\
+{\bf Supervisor:} Advait Sarkar \\
+{\bf Director of Studies:} Robert Harle \\
+{\bf Overseers:} Markus Kuhn and Neal Lathia \\
+
+
+\subsection*{Progress}
+The project is slightly behind schedule, largely due to hardware issues which have now been resolved. Most of the success criteria have been met, and work is now progressing onto evaluating the data. All in all, the project is about one week behind. This is however, with what was a fairly ambitious schedule, which was made to accommodate for any such issues. With a bit of extra time commitment in the next week or two, the project will be back on schedule.
+\\\\
+\noindent
+Thus far, a classifier based on the WEKA machine learning library has been created. The data is split into an 80/20 pair; training and testing respectively. This is done five times and cross-validated such that all of the data can be evaluated. Data gathering has also been automated with a window mounted Raspberry Pi (with the camera module) uploading images and actual weather data at regular intervals.
+
+\subsection*{Difficulties}
+One of the main difficulties was gathering data to use for the project. Although the idea of simply having a Raspberry Pi take images at regular intervals sounded trivial, finding a good location with constant power and a way of transferring the images to my laptop turned out to be slightly trickier than expected, especially with the lack of any simple to use dropbox package for the Pi. This was solved by using the Dropbox app development API for Java.
+\\\\
+\noindent
+The WEKA API also turned out to be much less intuative than one would hope, so more time than expected was used on learning and solving niche problems with it. Thankfully the project supervisor, Advait, had previous experience with WEKA.
+
+\subsection*{Changes}
+Some changes have been made to the original plan. The images are no longer classified using a set of human-created rules; a machine learning library (WEKA) has instead been adopted to use actual weather data and image metrics to predict the weather in each frame.
+
+
+
+\end{document}
