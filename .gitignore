@@ -13,4 +13,8 @@ bin/
 
 # Ignore JUnit files
 *.class
-test-logs/*
+test-logs/*data/
+data/data2.csv
+data/data.csv
+data/split
+data/test
