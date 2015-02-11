@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 //TODO: This entire thing can be made more efficient by removing whole file read/writes for each individual operation.
@@ -24,6 +26,30 @@ public class CsvManipulator {
 
 	public CsvManipulator(String file) {
 		_inputFile = file;
+	}
+	
+	public void addColumnWithValue(int columnNumber, String title, String value) throws IOException {
+	    BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
+	    
+	    ArrayList<String> lines = new ArrayList<String>();
+	    
+	    String line;
+	    while ((line = reader.readLine()) != null) {
+		lines.add(line);
+	    }
+	    
+	    reader.close();
+	    
+	    // Header
+	    line = lines.remove(0);
+	    String[] split = line.split(",");
+	    LinkedList<String> list = new LinkedList<String>(Arrays.asList(split));
+	    list.add(columnNumber, title);
+	    
+	    for (String s : lines) {
+		
+	    }
+	    
 	}
 
 	public void replaceEntryOnLine(int row, int column, String value) throws IOException {

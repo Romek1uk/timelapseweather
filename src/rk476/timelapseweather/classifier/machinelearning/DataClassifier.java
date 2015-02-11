@@ -24,7 +24,7 @@ public class DataClassifier {
 			throws Exception {
 		DataSource source = new DataSource(trainingfileName);
 		_trainingData = source.getDataSet();
-		
+
 		// String attribute change in weka, fix.
 		StringToNominal stn = new StringToNominal();
 		stn.setInputFormat(_trainingData);
@@ -35,25 +35,33 @@ public class DataClassifier {
 		if (_trainingData.checkForStringAttributes()) {
 			for (int i = 0; i < _trainingData.numAttributes(); i++) {
 				if (_trainingData.attribute(i).type() == Attribute.STRING) {
-					options[1] += (i + 1) + ","; // i + 1 because columns are 1-indexed only when being passed as arguments to filters
+					options[1] += (i + 1) + ","; // i + 1 because columns are
+													// 1-indexed only when being
+													// passed as arguments to
+													// filters
 				}
 			}
-			
+
 			// remove last comma
 			options[1] = options[1].substring(0, options[1].length() - 1);
 		}
-		
+
 		stn.setOptions(options);
 		_trainingData = Filter.useFilter(_trainingData, stn);
 
 		_trainingData.setClassIndex(classIndex);
 
 		_classifier = new RandomForest();
-	//	((RandomForest)_classifier).setOptions(Utils.splitOptions("-I 10")); 
-		
+		((RandomForest)_classifier).setOptions(Utils.splitOptions("-I 10"));
+
 		Remove remove = new Remove();
-		String splitOptions = "-R 1-" + classIndex + "," + (classIndex + 2) + "-17";
-		remove.setOptions(Utils.splitOptions(splitOptions)); // Name, date, time, actuals, predicted stuff
+		String splitOptions = "-R 1-" + classIndex + "," + (classIndex + 2)
+				+ "-17";
+		remove.setOptions(Utils.splitOptions(splitOptions)); // Name, date,
+																// time,
+																// actuals,
+																// predicted
+																// stuff
 		remove.setInputFormat(_trainingData);
 		_trainingData = Filter.useFilter(_trainingData, remove);
 
@@ -72,40 +80,45 @@ public class DataClassifier {
 		for (int i = 0; i < data.numInstances(); i++) {
 			_trainingData.add(data.instance(i));
 		}
-		
+
 		CsvManipulator manipulator = new CsvManipulator(fileName);
-		
+
 		Instances labelled = new Instances(data);
 
 		for (int i = 0; i < _trainingData.numInstances(); i++) {
-			double label = _classifier.classifyInstance(_trainingData
-					.instance(i));
-			
-			labelled.instance(i).setClassValue(label);
-			
-			// String s = _trainingData.classAttribute().value((int) label);
-			// String s = String.valueOf(_classifier.distributionForInstance(data.instance(i))[0]);
-			
-			 String s = _trainingData.classAttribute().value((int) label);
-			 if (s.isEmpty()) 
-				 s = String.valueOf(_classifier.distributionForInstance(data.instance(i))[0]);
-			
+			try {
+				double label = _classifier.classifyInstance(_trainingData
+						.instance(i));
+
+				labelled.instance(i).setClassValue(label);
+
+				String s = _trainingData.classAttribute().value((int) label);
+				if (s.isEmpty())
+					s = String.valueOf(_classifier.distributionForInstance(data
+							.instance(i))[0]);
+
+				manipulator.replaceEntryOnLine(i, _classIndex + 7, s);
+
+			} catch (Exception e) {
+				System.out.println("error " + i);
+			}
+
 			// System.out.println(s);
-			manipulator.replaceEntryOnLine(i, _classIndex + 7, s);
-			
+
 		}
 
 	}
 
 	public static void main(String[] args) throws IOException {
-		String prefix = // "/home/romek/Dropbox/Part II/data/";
-		"C:\\Users\\Romek\\Dropbox\\Part II\\data\\";
+		String prefix = "/home/romek/projects/timelapseweather/data/";
+		// "C:\\Users\\Romek\\Dropbox\\Part II\\data\\";
+		// "data/";
 		String data = prefix + "data.csv";
-		String trainnew = prefix + "\\split\\" + "train0.csv";
-		String testnew = prefix + "\\split\\" + "test0.csv";
-		
-		new CsvManipulator(data).splitCsvFile(5, prefix + "\\split\\");
-		
+		String trainnew = prefix + "split/" + "train0.csv";
+		String testnew = prefix + "split/" + "test0.csv";
+
+		new CsvManipulator(data).splitCsvFile(5, prefix + "split/");
+
 		System.out.println("split");
 
 		try {
@@ -114,14 +127,14 @@ public class DataClassifier {
 				classifier.fillFile(testnew);
 
 			}
-			
-			//DataClassifier classifier = new DataClassifier(trainnew, 6);
-		//	classifier.fillFile(testnew);
+
+			// DataClassifier classifier = new DataClassifier(trainnew, 6);
+			// classifier.fillFile(testnew);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("Done");
 	}
 }

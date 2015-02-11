@@ -1,6 +1,8 @@
 package rk476.timelapseweather.dataharvester;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +20,8 @@ import rk476.timelapseweather.dataharvester.weather.Forecast;
 public class DataHarvester extends TimerTask {
 
 	private static final int TIMEOUT = 5 * 60 * 1000;
+	
+	private static DropboxUploader _uploader;
 
 	private static Date getNext5MinuteMark() {
 		Calendar now = Calendar.getInstance();
@@ -26,20 +30,11 @@ public class DataHarvester extends TimerTask {
 		return now.getTime();
 	}
 
-	public static void main(String[] args) {
-		System.out.println("Start");
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new DataHarvester(), getNext5MinuteMark(),
-				TIMEOUT);
-		System.out.println("Next 5 minute mark is: "
-				+ getFormattedDateTime(getNext5MinuteMark()));
-	}
-
 	private static String getFormattedDateTime(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss");
 		return sdf.format(date);
 	}
-
+ 
 	private static String getFormattedDate(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
 		return sdf.format(date);
@@ -52,67 +47,86 @@ public class DataHarvester extends TimerTask {
 
 	@Override
 	public void run() {
-		Date datetime = new Date();
-		CsvData data = new CsvData();
-
-		System.out.println("Enter run");
-
-		new PiCamera().capture(getFormattedDateTime(datetime) + ".jpg");
-		data.setName(getFormattedDateTime(datetime) + ".jpg");
-		data.setDate(getFormattedDate(datetime));
-		data.setTime(getFormattedTime(datetime));
-
-		System.out.println("Captured");
-
-		Forecast forecast = new Forecast(getFormattedDateTime(datetime));
-		data.setActualIcon(forecast.getIcon());
-		data.setActualSunrise(forecast.getSunriseTime());
-		data.setActualSunset(forecast.getSunsetTime());
-		data.setActualCloudCover(String.valueOf(forecast.getCloudCover()));
-		data.setActualPrecipitation(String.valueOf(forecast.getPrecipitation()));
-		data.setActualTemperature(String.valueOf(forecast.getTemperature()));
-		// data.setActualVisibility(String.valueOf(forecast.getVisibility()));
-
-		System.out.println("weather gotten");
-
-		// TODO: this.
-		data.setPredictedCloudCover("--");
-		data.setPredictedIcon("--");
-		data.setPredictedSunrise("--");
-		data.setPredictedSunset("--");
-		data.setPredictedPrecipitation("--");
-		data.setPredictedTemperature("--");
-		data.setPredictedVisibility("--");
-
-		System.out.println("nulls set");
-
-		Image image = null;
 		try {
-			image = new Image(getFormattedDateTime(datetime) + ".jpg");
-		} catch (IOException e) {
-			// TODO: this means an image wasn't taken??
-			// (maybe a race condition if the picture command is asynchronous)
-			e.printStackTrace();
-		}
+			Date datetime = new Date();
+			CsvData data = new CsvData();
 
-		System.out.println("image retrieved");
+			System.out.println("Enter run");
 
-		data.setAverageHue(Hue.getAverageHueString(image)); 
-		data.setBrightnessHistogram(Brightness.getBrightnessHistogram(image));
-		data.setRedHistogram(Hue.getRedHistogram(image));
-		data.setBlueHistogram(Hue.getBlueHistogram(image));
-		data.setGreenHistogram(Hue.getGreenHistogram(image));
+			new PiCamera().capture(getFormattedDateTime(datetime) + ".jpg");
+			data.setName(getFormattedDateTime(datetime) + ".jpg");
+			data.setDate(getFormattedDate(datetime));
+			data.setTime(getFormattedTime(datetime));
 
-		System.out.println("data set");
+			System.out.println("Captured");
 
-		try {
+			Forecast forecast = new Forecast(getFormattedDateTime(datetime));
+			data.setActualIcon(forecast.getIcon());
+			data.setActualSunrise(forecast.getSunriseTime());
+			data.setActualSunset(forecast.getSunsetTime());
+			data.setActualCloudCover(String.valueOf(forecast.getCloudCover()));
+			data.setActualPrecipitation(String.valueOf(forecast
+					.getPrecipitation()));
+			data.setActualTemperature(String.valueOf(forecast.getTemperature()));
+			// data.setActualVisibility(String.valueOf(forecast.getVisibility()));
+
+			System.out.println("weather gotten");
+
+			// TODO: this.
+			data.setPredictedCloudCover("--");
+			data.setPredictedIcon("--");
+			data.setPredictedSunrise("--");
+			data.setPredictedSunset("--");
+			data.setPredictedPrecipitation("--");
+			data.setPredictedTemperature("--");
+			data.setPredictedVisibility("--");
+
+			System.out.println("nulls set");
+
+			Image image = null;
+			String imageFile = getFormattedDateTime(datetime) + ".jpg";
+			image = new Image(imageFile);
+			System.out.println("image retrieved");
+			
+			
+			_uploader.uploadFile(imageFile, "/project/data/images/" + imageFile); 
+			System.out.println("image uploaded");
+			
+			if (_uploader.doesFileExist("/project/data/images/" + imageFile)) {
+				Files.deleteIfExists(Paths.get(imageFile)); // Save space on the pi. 
+			}
+   
+			data.setAverageHue(Hue.getAverageHueString(image));
+			data.setBrightnessHistogram(Brightness
+					.getBrightnessHistogram(image));
+			data.setRedHistogram(Hue.getRedHistogram(image));
+			data.setBlueHistogram(Hue.getBlueHistogram(image));
+			data.setGreenHistogram(Hue.getGreenHistogram(image));
+
+			System.out.println("data set");
+
 			new CsvWriter("data.csv").addEntry(data);
 			System.out.println("Added entry");
+			
+			_uploader.uploadFile("data.csv", "/project/data/data.csv");
+			System.out.println("data uploaded");
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(getFormattedDateTime(new Date()) + ":: ERROR");
 		}
 
 		System.out.println("end");
 	}
-
+	
+	public static void main(String[] args) throws IOException {
+		System.out.println("Start");
+		
+		_uploader = new DropboxUploader();
+		 
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new DataHarvester(), getNext5MinuteMark(),
+				TIMEOUT);
+		System.out.println("Next 5 minute mark is: "
+				+ getFormattedDateTime(getNext5MinuteMark()));
+	}
 }
