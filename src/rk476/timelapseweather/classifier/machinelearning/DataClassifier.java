@@ -16,125 +16,121 @@ import weka.filters.unsupervised.attribute.StringToNominal;
 
 public class DataClassifier {
 
-	private Classifier _classifier;
-	private int _classIndex;
-	Instances _trainingData;
+    private Classifier _classifier;
+    private int _classIndex;
+    Instances _trainingData;
 
-	public DataClassifier(String trainingfileName, int classIndex)
-			throws Exception {
-		DataSource source = new DataSource(trainingfileName);
-		_trainingData = source.getDataSet();
+    public DataClassifier(String trainingfileName, int classIndex) throws Exception {
+	DataSource source = new DataSource(trainingfileName);
+	_trainingData = source.getDataSet();
 
-		// String attribute change in weka, fix.
-		StringToNominal stn = new StringToNominal();
-		stn.setInputFormat(_trainingData);
-		String[] options = new String[2];
-		options[0] = "-R";
-		options[1] = "";
+	// String attribute change in weka, fix.
+	StringToNominal stn = new StringToNominal();
+	stn.setInputFormat(_trainingData);
+	String[] options = new String[2];
+	options[0] = "-R";
+	options[1] = "";
 
-		if (_trainingData.checkForStringAttributes()) {
-			for (int i = 0; i < _trainingData.numAttributes(); i++) {
-				if (_trainingData.attribute(i).type() == Attribute.STRING) {
-					options[1] += (i + 1) + ","; // i + 1 because columns are
-													// 1-indexed only when being
-													// passed as arguments to
-													// filters
-				}
-			}
-
-			// remove last comma
-			options[1] = options[1].substring(0, options[1].length() - 1);
+	if (_trainingData.checkForStringAttributes()) {
+	    for (int i = 0; i < _trainingData.numAttributes(); i++) {
+		if (_trainingData.attribute(i).type() == Attribute.STRING) {
+		    options[1] += (i + 1) + ","; // i + 1 because columns are
+						 // 1-indexed only when being
+						 // passed as arguments to
+						 // filters
 		}
+	    }
 
-		stn.setOptions(options);
-		_trainingData = Filter.useFilter(_trainingData, stn);
-
-		_trainingData.setClassIndex(classIndex);
-
-		_classifier = new RandomForest();
-		((RandomForest)_classifier).setOptions(Utils.splitOptions("-I 10"));
-
-		Remove remove = new Remove();
-		String splitOptions = "-R 1-" + classIndex + "," + (classIndex + 2)
-				+ "-17";
-		remove.setOptions(Utils.splitOptions(splitOptions)); // Name, date,
-																// time,
-																// actuals,
-																// predicted
-																// stuff
-		remove.setInputFormat(_trainingData);
-		_trainingData = Filter.useFilter(_trainingData, remove);
-
-		_classifier.buildClassifier(_trainingData);
-		_classIndex = classIndex;
+	    // remove last comma
+	    options[1] = options[1].substring(0, options[1].length() - 1);
 	}
 
-	public void fillFile(String fileName) throws Exception {
-		DataSource source = new DataSource(fileName);
-		Instances data = source.getDataSet();
+	stn.setOptions(options);
+	_trainingData = Filter.useFilter(_trainingData, stn);
 
-		data.setClassIndex(_classIndex);
+	_trainingData.setClassIndex(classIndex);
 
-		_trainingData.delete();
+	_classifier = new RandomForest();
+	((RandomForest) _classifier).setOptions(Utils.splitOptions("-I 10"));
 
-		for (int i = 0; i < data.numInstances(); i++) {
-			_trainingData.add(data.instance(i));
-		}
+	Remove remove = new Remove();
+	String splitOptions = "-R 1-" + classIndex + "," + (classIndex + 2) + "-17";
+	remove.setOptions(Utils.splitOptions(splitOptions)); // Name, date,
+							     // time,
+							     // actuals,
+							     // predicted
+							     // stuff
+	remove.setInputFormat(_trainingData);
+	_trainingData = Filter.useFilter(_trainingData, remove);
 
-		CsvManipulator manipulator = new CsvManipulator(fileName);
+	_classifier.buildClassifier(_trainingData);
+	_classIndex = classIndex;
+    }
 
-		Instances labelled = new Instances(data);
+    public void fillFile(String fileName) throws Exception {
+	DataSource source = new DataSource(fileName);
+	Instances data = source.getDataSet();
 
-		for (int i = 0; i < _trainingData.numInstances(); i++) {
-			try {
-				double label = _classifier.classifyInstance(_trainingData
-						.instance(i));
+	data.setClassIndex(_classIndex);
 
-				labelled.instance(i).setClassValue(label);
+	_trainingData.delete();
 
-				String s = _trainingData.classAttribute().value((int) label);
-				if (s.isEmpty())
-					s = String.valueOf(_classifier.distributionForInstance(data
-							.instance(i))[0]);
+	for (int i = 0; i < data.numInstances(); i++) {
+	    _trainingData.add(data.instance(i));
+	}
 
-				manipulator.replaceEntryOnLine(i, _classIndex + 7, s);
+	CsvManipulator manipulator = new CsvManipulator(fileName);
 
-			} catch (Exception e) {
-				System.out.println("error " + i);
-			}
+	Instances labelled = new Instances(data);
 
-			// System.out.println(s);
+	for (int i = 0; i < _trainingData.numInstances(); i++) {
+	    try {
+		double label = _classifier.classifyInstance(_trainingData.instance(i));
 
-		}
+		labelled.instance(i).setClassValue(label);
+
+		String s = _trainingData.classAttribute().value((int) label);
+		if (s.isEmpty())
+		    s = String.valueOf(_classifier.distributionForInstance(data.instance(i))[0]);
+
+		manipulator.replaceEntryOnLine(i, _classIndex + 7, s);
+
+	    } catch (Exception e) {
+		System.out.println("error " + i);
+	    }
+
+	    // System.out.println(s);
 
 	}
 
-	public static void main(String[] args) throws IOException {
-		String prefix = "/home/romek/projects/timelapseweather/data/";
-		// "C:\\Users\\Romek\\Dropbox\\Part II\\data\\";
-		// "data/";
-		String data = prefix + "data.csv";
-		String trainnew = prefix + "split/" + "train0.csv";
-		String testnew = prefix + "split/" + "test0.csv";
+    }
 
-		new CsvManipulator(data).splitCsvFile(5, prefix + "split/");
+    public static void main(String[] args) throws IOException {
+	String prefix = "/home/romek/projects/timelapseweather/data/";
+	// "C:\\Users\\Romek\\Dropbox\\Part II\\data\\";
+	// "data/";
+	String data = prefix + "data.csv";
+	String trainnew = prefix + "split/" + "train0.csv";
+	String testnew = prefix + "split/" + "test0.csv";
 
-		System.out.println("split");
+	new CsvManipulator(data).splitCsvFile(5, prefix + "split/");
 
-		try {
-			for (int i = 3; i < 10; i++) {
-				DataClassifier classifier = new DataClassifier(trainnew, i);
-				classifier.fillFile(testnew);
+	System.out.println("split");
 
-			}
+	try {
+	    for (int i = 3; i < 10; i++) {
+		DataClassifier classifier = new DataClassifier(trainnew, i);
+		classifier.fillFile(testnew);
 
-			// DataClassifier classifier = new DataClassifier(trainnew, 6);
-			// classifier.fillFile(testnew);
+	    }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	    // DataClassifier classifier = new DataClassifier(trainnew, 6);
+	    // classifier.fillFile(testnew);
 
-		System.out.println("Done");
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
+
+	System.out.println("Done");
+    }
 }
