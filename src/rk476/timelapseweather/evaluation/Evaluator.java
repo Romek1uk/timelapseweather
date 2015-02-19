@@ -13,13 +13,19 @@ public class Evaluator {
 
     private static void evaluateDiscreteData(ArrayList<String> inputs, ArrayList<String> comparisons) {
 	int correct = 0;
+	int size = inputs.size();
 
 	for (int i = 0; i < inputs.size(); i++) {
-	    correct += inputs.get(i).replaceAll("\"", "").equals(comparisons.get(i).replaceAll("\"", "")) ? 1 : 0;
+	    if (inputs.get(i).equals("--") || comparisons.get(i).equals("--") || inputs.get(i).equals("\"--\"") || comparisons.get(i).equals("\"--\"")) {
+		size--;
+	    } else {
+		correct += inputs.get(i).replaceAll("\"", "").equals(comparisons.get(i).replaceAll("\"", "")) ? 1 : 0;
+	    }
 	}
-	System.out.println(correct + "/" + inputs.size() + " (" + ((double) correct) / ((double) inputs.size()) + "%)");
+	System.out.println(correct + "/" + size + " (" + ((double) correct) / ((double) size) + "%)");
+	System.out.println("Failed: " + (inputs.size() - size) + "/" + inputs.size());
     }
-    
+
     private static void evaluateTimeData(ArrayList<String> inputs, ArrayList<String> comparisons) {
 	// TODO: Edge cases (time passes midnight)
 	int msetotal = 0;
@@ -31,15 +37,16 @@ public class Evaluator {
 	    } else {
 		String[] ins = inputs.get(i).split(":");
 		int in = Integer.parseInt(ins[0]) * 3600 + Integer.parseInt(ins[1]) * 60 + Integer.parseInt(ins[2]);
-		
+
 		String[] acts = comparisons.get(i).split(":");
 		int act = Integer.parseInt(acts[0]) * 3600 + Integer.parseInt(acts[1]) * 60 + Integer.parseInt(acts[2]);
-		
+
 		msetotal += (in - act) * (in - act);
 	    }
 	}
 	double mse = Math.sqrt((double) msetotal / (double) size);
 	System.out.println(mse + " seconds");
+	System.out.println("Failed: " + (inputs.size() - size) + "/" + inputs.size());
     }
 
     private static void evaluateContinuousData(ArrayList<String> inputs, ArrayList<String> comparisons) {
@@ -60,6 +67,7 @@ public class Evaluator {
 	}
 	double mse = Math.sqrt(msetotal / (double) size);
 	System.out.println(mse);
+	System.out.println("Failed: " + (inputs.size() - size) + "/" + inputs.size());
     }
 
     public static void evaluateData(String fileName, int inputCol, int comparisonCol, DataType type) throws IOException {
@@ -77,22 +85,19 @@ public class Evaluator {
 	    comparisons.add(elements[comparisonCol]);
 	}
 	reader.close();
-	
+
 	if (type == DISCRETE) {
 	    evaluateDiscreteData(inputs, comparisons);
-	}
-	else if (type == CONTINUOUS) {
+	} else if (type == CONTINUOUS) {
 	    evaluateContinuousData(inputs, comparisons);
-	}
-	else if (type == TIME) {
+	} else if (type == TIME) {
 	    evaluateTimeData(inputs, comparisons);
-	}
-	else 
+	} else
 	    System.out.println("OTHER DATA TYPE");
     }
 
     public static void main(String args[]) {
-	String filename = "data/split/test0.csv";
+	String filename = "data/datamerged.csv";// "data/split/test0.csv";
 
 	for (int i = 4; i < 11; i++) {
 	    try {
