@@ -2,9 +2,11 @@ package rk476.timelapseweather.dataharvester.data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -133,5 +135,87 @@ public class CsvManipulator {
 	    new CsvManipulator(newDirectory + "train" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
 	    new CsvManipulator(newDirectory + "test" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
 	}
+    }
+
+    private static int getMinuteFromLine(String input) {
+	String[] splitDate = input.split(",")[2].split("-");
+	String[] splitTime = input.split(",")[3].split(":");
+
+	int result = 0;
+	
+	System.out.println(input);
+
+	// Not exact values for minutes per day/month/year (too high)
+	result += (Integer.parseInt(splitDate[0]) - 2014) * 1440 + Integer.parseInt(splitDate[1]) * 44000 + Integer.parseInt(splitDate[2]) * 526000;
+
+	result += Integer.parseInt(splitTime[0]) * 60 + Integer.parseInt(splitTime[1]);
+
+	return result;
+
+    }
+    
+    private static boolean andBoolArray(boolean[] input) {
+	for (boolean b : input) {
+	    if (!b)
+		return false;
+	}
+	return true;
+    }
+    
+    private static int getSmallestIndex(int[] input) {
+	int max = Integer.MAX_VALUE;
+	int index = 0;
+	for (int i = 0; i < input.length; i++) {
+	    if (input[i] < max) {
+		max = input[i];
+		index = i;
+	    }
+	}
+	return index;
+    }
+
+    public static void mergeCsvFiles(String[] inputFiles, String outputFile) throws IOException {
+	// Merge in date order!
+	CsvWriter writer = new CsvWriter(outputFile, true);
+
+	BufferedReader[] readers = new BufferedReader[inputFiles.length];
+	String[] lines = new String[inputFiles.length];
+	boolean[] empty = new boolean[inputFiles.length];
+	int[] max = new int[inputFiles.length];
+
+	for (int i = 0; i < inputFiles.length; i++) {
+	    readers[i] = new BufferedReader(new FileReader(inputFiles[i]));
+	    
+	    readers[i].readLine(); // headers
+	    
+	    lines[i] = readers[i].readLine();
+	    
+	    // TODO: Work around for strange writing headers twice bug??!?!
+	    if (lines[i].split(",")[1].equals("name")) {
+		lines[i] = readers[i].readLine();
+	    }
+	    
+	    empty[i] = lines[i] == null;
+	    max[i] = empty[i] ? Integer.MAX_VALUE : getMinuteFromLine(lines[i]);
+	}
+
+	while (!andBoolArray(empty)) { // while at least one isn't empty
+	    int i = getSmallestIndex(max);
+	    writer.addLine(lines[i]);
+	    System.out.println("added + " + lines[i]);
+	    lines[i] = readers[i].readLine();
+	    
+	    if (lines[i] == null) {
+		empty[i] = true;
+		max[i] = Integer.MAX_VALUE;
+	    }
+	}
+
+	for (Reader r : readers) {
+	    r.close();
+	}
+    }
+
+    public static void main(String[] args) {
     }
 }
