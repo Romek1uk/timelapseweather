@@ -51,7 +51,7 @@ public class DataClassifier {
 	_trainingData.setClassIndex(classIndex);
 
 	_classifier = new RandomForest();
-	((RandomForest) _classifier).setOptions(Utils.splitOptions("-I 10"));
+	((RandomForest) _classifier).setOptions(Utils.splitOptions("-I 100"));
 
 	Remove remove = new Remove();
 	String splitOptions = "-R 1-" + classIndex + "," + (classIndex + 2) + "-17";
@@ -131,8 +131,6 @@ public class DataClassifier {
 
 	System.out.println("Classified");
 	
-	
-
 	// Merge again
 	String[] files = new String[5];
 	for (int i = 0; i < 5; i++) {
