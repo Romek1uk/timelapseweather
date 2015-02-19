@@ -96,7 +96,7 @@ public class DataClassifier {
 		manipulator.replaceEntryOnLine(i, _classIndex + 7, s);
 
 	    } catch (Exception e) {
-		System.out.println("error " + i);
+	//	System.out.println("error " + i);
 	    }
 
 	    // System.out.println(s);
@@ -110,26 +110,38 @@ public class DataClassifier {
 	// "C:\\Users\\Romek\\Dropbox\\Part II\\data\\";
 	// "data/";
 	String data = prefix + "data.csv";
-	String trainnew = prefix + "split/" + "train0.csv";
-	String testnew = prefix + "split/" + "test0.csv";
 
+	
+	
 	new CsvManipulator(data).splitCsvFile(5, prefix + "split/");
 
 	System.out.println("split");
 
-	try {
-	    for (int i = 3; i < 10; i++) {
-		DataClassifier classifier = new DataClassifier(trainnew, i);
-		classifier.fillFile(testnew);
+	for (int j = 0; j < 5; j++) {
+	    try {
+		for (int i = 3; i < 10; i++) {
+		    DataClassifier classifier = new DataClassifier(prefix + "split/" + "train" + j + ".csv", i);
+		    classifier.fillFile(prefix + "split/" + "test" + j + ".csv");
+		}
 
+	    } catch (Exception e) {
+		e.printStackTrace();
 	    }
-
-	    // DataClassifier classifier = new DataClassifier(trainnew, 6);
-	    // classifier.fillFile(testnew);
-
-	} catch (Exception e) {
-	    e.printStackTrace();
 	}
+
+	System.out.println("Classified");
+	
+	
+
+	// Merge again
+	String[] files = new String[5];
+	for (int i = 0; i < 5; i++) {
+	    files[i] = prefix + "split/" + "test" + i + ".csv";
+	}
+
+	CsvManipulator.mergeCsvFiles(files, prefix + "datamerged.csv");
+
+	System.out.println("Merged");
 
 	System.out.println("Done");
     }
