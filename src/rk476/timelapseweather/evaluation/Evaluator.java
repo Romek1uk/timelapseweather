@@ -97,19 +97,36 @@ public class Evaluator {
     }
 
     public static void main(String args[]) {
-	String filename = "data/datamerged.csv";// "data/split/test0.csv";
+	for (int k = 10; k <= 100; k += 10) {
+	    System.out.println("------ " + k);
 
-	for (int i = 4; i < 11; i++) {
-	    try {
-		System.out.println(TITLES[i - 4] + ": " + TYPES[i - 4]);
-		evaluateData(filename, i, i + 7, TYPES[i - 4]);
-		System.out.println();
-	    } catch (IOException e) {
-		e.printStackTrace();
+	    String filename = "data/datamerged.csv";// "data/split/test0.csv";
+	    // "data/randomforest/forest" + k + "trees/datamerged.csv";//
+
+	    for (int i = 4; i < 11; i++) {
+		try {
+		    System.out.println(TITLES[i - 4] + ": " + TYPES[i - 4]);
+		    evaluateData(filename, i, i + 7, TYPES[i - 4]);
+		    System.out.println();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
 	    }
 	}
 
-	System.out.println("asdasd");
+	// String filename =
+	// "data/randomforest/forest10trees/datamerged.csv";//"data/datamerged.csv";//
+	// "data/split/test0.csv";
+	//
+	// for (int i = 4; i < 11; i++) {
+	// try {
+	// System.out.println(TITLES[i - 4] + ": " + TYPES[i - 4]);
+	// evaluateData(filename, i, i + 7, TYPES[i - 4]);
+	// System.out.println();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
     }
 
 }

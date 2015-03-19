@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import rk476.timelapseweather.dataharvester.data.CsvManipulator;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.Instances;
@@ -50,8 +49,17 @@ public class DataClassifier {
 
 	_trainingData.setClassIndex(classIndex);
 
-	_classifier = new RandomForest();
-	((RandomForest) _classifier).setOptions(Utils.splitOptions("-I 100"));
+	 _classifier = new RandomForest();
+	 ((RandomForest) _classifier).setOptions(Utils.splitOptions("-I 1000"));
+
+	// _classifier = new MultilayerPerceptron();
+	// ((MultilayerPerceptron) _classifier).setHiddenLayers("3, 3, 3"); // 3
+	// layer, 3
+	// ((MultilayerPerceptron) _classifier).setTrainingTime(20); // 20
+	// epochs
+
+//	_classifier = new LinearRegression();
+//	// ((J48)_classifier).setUnpruned(true);
 
 	Remove remove = new Remove();
 	String splitOptions = "-R 1-" + classIndex + "," + (classIndex + 2) + "-17";
@@ -96,13 +104,17 @@ public class DataClassifier {
 		manipulator.replaceEntryOnLine(i, _classIndex + 7, s);
 
 	    } catch (Exception e) {
-	//	System.out.println("error " + i);
+		// System.out.println("error " + i);
 	    }
 
 	    // System.out.println(s);
 
 	}
+    }
 
+    public void finalize() {
+	_trainingData.clear();
+	_trainingData.delete();
     }
 
     public static void main(String[] args) throws IOException {
@@ -111,26 +123,29 @@ public class DataClassifier {
 	// "data/";
 	String data = prefix + "data.csv";
 
-	
-	
-	new CsvManipulator(data).splitCsvFile(5, prefix + "split/");
+	int completed = 0;
 
-	System.out.println("split");
+	// for (int k = 1; k <= 100; k+=10) {
+	new CsvManipulator(data).splitCsvFile(5, prefix + "split/");
+	// System.out.println("split " + k);
 
 	for (int j = 0; j < 5; j++) {
 	    try {
-		for (int i = 3; i < 10; i++) {
+		for (int i = 4; i < 8; i+=3) { //for (int i = 3; i < 10; i++) {
 		    DataClassifier classifier = new DataClassifier(prefix + "split/" + "train" + j + ".csv", i);
 		    classifier.fillFile(prefix + "split/" + "test" + j + ".csv");
-		}
+		    classifier.finalize();
 
+		    System.out.println("Completed: " + ++completed + "/" + "35");
+		}
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
-	}
+	    // }
 
-	System.out.println("Classified");
-	
+	}
+	System.out.println("Classified ");
+
 	// Merge again
 	String[] files = new String[5];
 	for (int i = 0; i < 5; i++) {
@@ -139,7 +154,7 @@ public class DataClassifier {
 
 	CsvManipulator.mergeCsvFiles(files, prefix + "datamerged.csv");
 
-	System.out.println("Merged");
+	System.out.println("Merged ");
 
 	System.out.println("Done");
     }
