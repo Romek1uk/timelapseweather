@@ -2,7 +2,7 @@ package rk476.timelapseweather.dataharvester.data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -110,6 +110,11 @@ public class CsvManipulator {
 	CsvWriter[] trainfiles = new CsvWriter[quantity];
 	CsvWriter[] testfiles = new CsvWriter[quantity];
 
+	File f = new File(newDirectory);
+	if (!f.exists()) {
+	    f.mkdirs();
+	}
+	
 	for (int i = 0; i < quantity; i++) {
 	    trainfiles[i] = new CsvWriter(newDirectory + "train" + i + ".csv");
 	    testfiles[i] = new CsvWriter(newDirectory + "test" + i + ".csv");
@@ -134,6 +139,11 @@ public class CsvManipulator {
 	for (int i = 0; i < quantity; i++) {
 	    new CsvManipulator(newDirectory + "train" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
 	    new CsvManipulator(newDirectory + "test" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
+	}
+	
+	for (int i = 0; i < quantity; i++) {
+	    trainfiles[i].finalize();
+	    testfiles[i].finalize();
 	}
     }
 
@@ -210,6 +220,8 @@ public class CsvManipulator {
 		max[i] = Integer.MAX_VALUE;
 	    }
 	}
+	
+	writer.finalize();
 
 	for (Reader r : readers) {
 	    r.close();

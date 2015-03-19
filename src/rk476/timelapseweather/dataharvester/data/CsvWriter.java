@@ -130,6 +130,10 @@ public class CsvWriter {
 	    e.printStackTrace();
 	}
     }
+    
+    public void finalize() throws IOException {
+	_writer.close();
+    }
 
     public CsvWriter(String fileName) {	
 	try {
