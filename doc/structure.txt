@@ -6,12 +6,13 @@
 - - What is time lapse/why it's useful
 - - What this project aims to accomplish 
 - - Literature review summary (?)
-- Preperation
+- Preparation
 - - Requirements analysis (as detailed in pink booklet)
 - - - hardware/libraries (Could also go into implementation)
 - - Data gathering (Could also go into implementation)
 - Implementation
 - - Machine learning
+- - - (Add some details about what it is + useless diagrams)
 - - Gathering image data (brightness, rgb, etc)
 - - csv files
 - - sanity checks
@@ -20,6 +21,10 @@
 - - (Will see when I get numbers)
 - - How accurate it is
 - - why/why not it's accurate
+- - Which classifiers are more/less accurate
+- - - Why (Maybe?)
+- - - For which parts (cloud/icon distinctly had diferent results with
+  different classifiers)
 - - Look at literature review and how they evaluated their work
 - - - what metrics, etc
 - Conclusions
@@ -39,4 +44,4 @@
 # short dissertations generally get marked better anyway (easier to understand and less bog-downing)
 
 # start with preperation.
-# introduction should be written LAST, as a question to the conclusionc
+# introduction should be written LAST, as a question to the conclusion
