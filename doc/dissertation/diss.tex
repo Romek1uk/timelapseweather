@@ -1,0 +1,201 @@
+\documentclass[14]{report}
+\usepackage{a4wide}
+\usepackage{hyperref}
+
+\parindent 0pt
+\parskip 6pt
+
+\begin{document}
+
+\begin{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title Page
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE University of Cambridge}\\[1.5cm] % Name of your university/college
+\textsc{\Large Computer Science Tripos}\\[0.5cm] % Major heading such as course name
+\textsc{\large Part II Project}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Time-Lapse Based Weather Classification}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+Roman \textsc{Kolacz} % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Advait \textsc{Sarka} % Supervisor's Name
+\end{flushright}
+\end{minipage}\\[4cm]
+
+% If you don't want a supervisor, uncomment the two lines below and remove the section above
+%\Large \emph{Author:}\\
+%John \textsc{Smith}\\[3cm] % Your name
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large \today}\\[3cm] % Date, change the \today to a set date if you want to be precise
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+%\includegraphics{Logo}\\[1cm] % Include a department/university logo - this will require the graphicx package
+ 
+%----------------------------------------------------------------------------------------
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+\chapter*{Proforma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Proforma, table of contents, list of figures
+
+\begin{tabular}{ll}
+  \bf Name: & Roman Kolacz \\
+  \bf College: & Downing College \\
+  \bf Project Title: & TIme-Lapse Based Weather Classification \\
+  \bf Examination: & Computer Science Tripos - Part II \\
+  \bf Word Count: \\
+  \bf Project Originator: & Alan Blackwell \\
+  \bf Project Supervisor: & Advait Sarkar \\
+\end{tabular}
+
+\section*{Initial Project Aims}
+The initial aim of the project was to associate time-lapse video with external data sources by using a time-lapse video of an outside location to tell the weather. This would then be evaluated against real weather information and demonstrated graphically.
+
+The success criteria included:
+\begin{enumerate}
+  \item Inferring the sunrise and sunset times
+  \item Labelling the weather with one of the following:
+    \begin{itemize}
+      \item Clear
+      \item Cloud
+      \item Rain
+      \item Snow
+    \end{itemize}
+  \item Inferring the cloud cover within each frame of the video
+  \item Assigning a measure of confidence to each of the above criteria to reflect the probability of incorrectly inferred data.
+  \item Graphically demonstrating the work and showing it works to some degree of accuracy.
+  \item Evaluating the accuracy of the data.
+\end{enumerate}
+
+\section*{Summary of Work Completed}
+All of the above success criteria have been
+
+\section*{Special Difficulties}
+None.
+
+\section*{Decleration of Originality}
+I, Roman Kolacz of Downing College, being a candidate for Part II of the Computer Science Tripos, hereby declare that this disseration and the work described in it are my own work, unaided except as may be specified below, and that the disseration does not contain material that has aready been used to any substantial extent for a comparable purpose.
+
+\bigskip
+\leftline{\bf Signed:}
+
+\bigskip
+\leftline\bf{\bf Date:}
+
+\newpage
+
+\section*{Acknowledgements}
+
+\tableofcontents
+
+\listoffigures
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dissertation content
+\chapter{Introduction}
+
+\section{Aims}
+
+\section{Challenges}
+
+\section{Related Work} %Literature Review
+
+\chapter{Preparation}
+
+\section{Requirements Analysis}
+
+
+\section{Data Gathering}
+Raspberry pi, camera, forecast, etc
+
+\section{Time Lapse}
+
+\section{Machine Learning}
+As in, what it is, really.
+
+\section{Choice of Tools}
+Backup/eclipse/vim/weka/forecast?
+
+\chapter{Implementation}
+
+\section{Machine Learning}
+How we used it, to contrast with the Preperation.Machine Learning section.
+Subsections for types
+add diagrams
+- Training
+- Feature selection/extraction
+
+- Classification
+- - Classifiers
+
+\section{Gathering Image Data}
+csv files
+
+\section{Sanity Checking}
+
+\chapter{Evaluation}
+
+\section{Cross Validation}
+
+\section{Analysis of Classifiers}
+Which ones are better at what \cite{x} % Need some citation to prevent errors
+
+\section{Results}
+Summary of overall results/accuracy, etc?
+\chapter{Conclusions}
+
+\section{Results}
+
+\section{Future Work}
+Extensions, etc?
+
+\section{Changes}
+Could be merged with above?
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{plain}
+\bibliography{refs}{}
+
+\chapter{Appendices}
+
+\chapter{Proposal}
+
+\end{document}
+
