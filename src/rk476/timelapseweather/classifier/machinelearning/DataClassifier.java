@@ -1,10 +1,13 @@
 package rk476.timelapseweather.classifier.machinelearning;
 
+import java.io.File;
 import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 
 import rk476.timelapseweather.dataharvester.data.CsvManipulator;
 import weka.classifiers.Classifier;
-import weka.classifiers.trees.RandomForest;
+import weka.classifiers.functions.SMO;
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -19,9 +22,16 @@ public class DataClassifier {
     private int _classIndex;
     Instances _trainingData;
 
-    public DataClassifier(String trainingfileName, int classIndex) throws Exception {
+    public DataClassifier(String trainingfileName, int classIndex, Classifier classifier) throws Exception {
 	DataSource source = new DataSource(trainingfileName);
-	_trainingData = source.getDataSet();
+
+	try {
+	    _trainingData = source.getDataSet();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    System.out.println(trainingfileName);
+	    return;
+	}
 
 	// String attribute change in weka, fix.
 	StringToNominal stn = new StringToNominal();
@@ -34,9 +44,9 @@ public class DataClassifier {
 	    for (int i = 0; i < _trainingData.numAttributes(); i++) {
 		if (_trainingData.attribute(i).type() == Attribute.STRING) {
 		    options[1] += (i + 1) + ","; // i + 1 because columns are
-						 // 1-indexed only when being
-						 // passed as arguments to
-						 // filters
+		    // 1-indexed only when being
+		    // passed as arguments to
+		    // filters
 		}
 	    }
 
@@ -49,8 +59,8 @@ public class DataClassifier {
 
 	_trainingData.setClassIndex(classIndex);
 
-	 _classifier = new RandomForest();
-	 ((RandomForest) _classifier).setOptions(Utils.splitOptions("-I 1000"));
+	_classifier = classifier;
+	// ((RandomForest) _classifier).setOptions(Utils.splitOptions("-I 50"));
 
 	// _classifier = new MultilayerPerceptron();
 	// ((MultilayerPerceptron) _classifier).setHiddenLayers("3, 3, 3"); // 3
@@ -58,20 +68,31 @@ public class DataClassifier {
 	// ((MultilayerPerceptron) _classifier).setTrainingTime(20); // 20
 	// epochs
 
-//	_classifier = new LinearRegression();
-//	// ((J48)_classifier).setUnpruned(true);
+	// _classifier = new LinearRegression();
+	// ((J48)_classifier).setUnpruned(true);
 
 	Remove remove = new Remove();
 	String splitOptions = "-R 1-" + classIndex + "," + (classIndex + 2) + "-17";
 	remove.setOptions(Utils.splitOptions(splitOptions)); // Name, date,
-							     // time,
-							     // actuals,
-							     // predicted
-							     // stuff
+	// time,
+	// actuals,
+	// predicted
+	// stuff
 	remove.setInputFormat(_trainingData);
 	_trainingData = Filter.useFilter(_trainingData, remove);
 
-	_classifier.buildClassifier(_trainingData);
+	// NumericToNominal numericToNominal = new NumericToNominal();
+	// numericToNominal.setInputFormat(_trainingData);
+	// _trainingData = Filter.useFilter(_trainingData, numericToNominal);
+
+	try {
+	    _classifier.buildClassifier(_trainingData);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    System.out.println(trainingfileName);
+	    return;
+	}
+
 	_classIndex = classIndex;
     }
 
@@ -117,45 +138,79 @@ public class DataClassifier {
 	_trainingData.delete();
     }
 
-    public static void main(String[] args) throws IOException {
-	String prefix = "/home/romek/projects/timelapseweather/data/";
-	// "C:\\Users\\Romek\\Dropbox\\Part II\\data\\";
-	// "data/";
-	String data = prefix + "data.csv";
+    private static final String _prefix = "D:\\Dropbox\\Dropbox\\Part II\\project\\data\\"; // "/home/romek/projects/timelapseweather/data/";
+
+    private static void doClassify(Classifier classifier, String name) throws IOException, InterruptedException {
+	System.out.println(name);
+
+	FileUtils.copyDirectory(new File(_prefix + "split\\"), new File(_prefix + name + "\\split\\"));
+
+	System.out.println("copied " + name);
 
 	int completed = 0;
 
-	// for (int k = 1; k <= 100; k+=10) {
-	new CsvManipulator(data).splitCsvFile(5, prefix + "split/");
-	// System.out.println("split " + k);
-
 	for (int j = 0; j < 5; j++) {
-	    try {
-		for (int i = 4; i < 8; i+=3) { //for (int i = 3; i < 10; i++) {
-		    DataClassifier classifier = new DataClassifier(prefix + "split/" + "train" + j + ".csv", i);
-		    classifier.fillFile(prefix + "split/" + "test" + j + ".csv");
-		    classifier.finalize();
+	    for (int i = 4; i <= 9; i++) {
+		try {
+		    DataClassifier dataclassifier = new DataClassifier(_prefix + name + "\\split\\" + "train" + j + ".csv", i, classifier);
+
+		    dataclassifier.fillFile(_prefix + name + "\\split\\" + "test" + j + ".csv");
+		    dataclassifier.finalize();
 
 		    System.out.println("Completed: " + ++completed + "/" + "35");
+		} catch (Exception e) {
+		    System.out.println("Error on file " + j + " and column " + i);
+		    e.printStackTrace();
 		}
-	    } catch (Exception e) {
-		e.printStackTrace();
 	    }
-	    // }
-
 	}
-	System.out.println("Classified ");
 
-	// Merge again
+	System.out.println("Classified " + name);
+
 	String[] files = new String[5];
 	for (int i = 0; i < 5; i++) {
-	    files[i] = prefix + "split/" + "test" + i + ".csv";
+	    files[i] = _prefix + name + "\\split\\" + "test" + i + ".csv";
 	}
 
-	CsvManipulator.mergeCsvFiles(files, prefix + "datamerged.csv");
+	CsvManipulator.mergeCsvFiles(files, _prefix + name + "\\datamerged.csv");
 
-	System.out.println("Merged ");
+	System.out.println("Merged");
 
 	System.out.println("Done");
+    }
+
+    public static void main(String[] args) throws IOException {
+
+	// new CsvManipulator(_prefix + "data.csv").splitCsvFile(5, _prefix +
+	// "split\\");
+
+	// for (int k = 100; k <= 200; k+=100) {
+	// new Thread(){
+	// private int k;
+	// public Thread init(int k) {
+	// this.k = k;
+	// return this;
+	// }
+	// public void run() {
+	// RandomForest rf = new RandomForest();
+	// rf.setMaxDepth(0);
+	// rf.setNumTrees(k);
+	// try {
+	// doClassify(rf, "randomforests" + k);
+	// } catch (IOException | InterruptedException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// }.init(k).start();
+	//
+	// }
+
+	SMO rf = new SMO();
+	try {
+	    doClassify(rf, "smo");
+	} catch (IOException | InterruptedException e) {
+	    e.printStackTrace();
+	}
+
     }
 }

@@ -18,216 +18,211 @@ import java.util.Random;
 
 public class CsvManipulator {
 
-    private String _inputFile;
+	private String _inputFile;
 
-    public String getInputFile() {
-	return _inputFile;
-    }
-
-    private static Random _random = new Random();
-
-    public CsvManipulator(String file) {
-	_inputFile = file;
-    }
-
-    private String addValueToLine(String line, int col, String content) {
-	LinkedList<String> list = new LinkedList<String>(Arrays.asList(line.split(",")));
-	list.add(col, content);
-
-	String ret = "";
-	for (String s : list) {
-	    ret += s + ",";
+	public String getInputFile() {
+		return _inputFile;
 	}
 
-	return ret.substring(0, ret.length() - 1);
-    }
+	private static Random _random = new Random();
 
-    public void addColumnWithValue(int columnNumber, String title, String value) throws IOException {
-	BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
-
-	ArrayList<String> lines = new ArrayList<String>();
-
-	String line;
-	while ((line = reader.readLine()) != null) {
-	    lines.add(line);
+	public CsvManipulator(String file) {
+		_inputFile = file;
 	}
 
-	reader.close();
+	private String addValueToLine(String line, int col, String content) {
+		LinkedList<String> list = new LinkedList<String>(Arrays.asList(line.split(",")));
+		list.add(col, content);
 
-	// Header
-	lines.set(0, addValueToLine(lines.get(0), columnNumber, title));
+		String ret = "";
+		for (String s : list) {
+			ret += s + ",";
+		}
 
-	for (int i = 1; i < lines.size(); i++) { // Ignore header
-	    lines.set(i, addValueToLine(lines.get(i), columnNumber, value));
+		return ret.substring(0, ret.length() - 1);
 	}
 
-	// TODO: Duplicate code with replaceEntryOnLine
-	BufferedWriter writer = new BufferedWriter(new FileWriter(_inputFile));
-	for (String s : lines) {
-	    writer.write(s + "\n");
-	}
-	writer.close();
-    }
+	public void addColumnWithValue(int columnNumber, String title, String value) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
 
-    public void replaceEntryOnLine(int row, int column, String value) throws IOException {
-	BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
-	String content = "";
+		ArrayList<String> lines = new ArrayList<String>();
 
-	row = row + 1; // ignore headers
+		String line;
+		while ((line = reader.readLine()) != null) {
+			lines.add(line);
+		}
 
-	ArrayList<String> lines = new ArrayList<String>();
+		reader.close();
 
-	String line;
-	while ((line = reader.readLine()) != null) {
-	    lines.add(line);
-	}
+		// Header
+		lines.set(0, addValueToLine(lines.get(0), columnNumber, title));
 
-	reader.close();
+		for (int i = 1; i < lines.size(); i++) { // Ignore header
+			lines.set(i, addValueToLine(lines.get(i), columnNumber, value));
+		}
 
-	content = lines.get(row);
-
-	String[] split = content.split(",");
-	split[column] = value;
-
-	content = "";
-	for (String s : split) {
-	    content += s + ",";
-	}
-	content = content.substring(0, content.length() - 1); // remove last
-							      // comma
-
-	lines.set(row, content);
-
-	BufferedWriter writer = new BufferedWriter(new FileWriter(_inputFile));
-	for (String s : lines) {
-	    writer.write(s + "\n");
-	}
-	writer.close();
-    }
-
-    public void splitCsvFile(int quantity, String newDirectory) throws IOException {
-	// create files
-	CsvWriter[] trainfiles = new CsvWriter[quantity];
-	CsvWriter[] testfiles = new CsvWriter[quantity];
-
-	File f = new File(newDirectory);
-	if (!f.exists()) {
-	    f.mkdirs();
-	}
-	
-	for (int i = 0; i < quantity; i++) {
-	    trainfiles[i] = new CsvWriter(newDirectory + "train" + i + ".csv");
-	    testfiles[i] = new CsvWriter(newDirectory + "test" + i + ".csv");
+		// TODO: Duplicate code with replaceEntryOnLine
+		BufferedWriter writer = new BufferedWriter(new FileWriter(_inputFile));
+		for (String s : lines) {
+			writer.write(s + "\n");
+		}
+		writer.close();
 	}
 
-	BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
+	public void replaceEntryOnLine(int row, int column, String value) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
+		String content = "";
 
-	String line;
-	while ((line = reader.readLine()) != null) {
-	    int val = _random.nextInt(quantity);
+		row = row + 1; // ignore headers
 
-	    for (int i = 0; i < quantity; i++) {
-		if (i == val)
-		    testfiles[val].addLine(line);
-		else
-		    trainfiles[val].addLine(line);
-	    }
+		ArrayList<String> lines = new ArrayList<String>();
+
+		String line;
+		while ((line = reader.readLine()) != null) {
+			lines.add(line);
+		}
+
+		reader.close();
+
+		content = lines.get(row);
+
+		String[] split = content.split(",");
+		split[column] = value;
+
+		content = "";
+		for (String s : split) {
+			content += s + ",";
+		}
+		content = content.substring(0, content.length() - 1); // remove last
+		// comma
+
+		lines.set(row, content);
+
+		BufferedWriter writer = new BufferedWriter(new FileWriter(_inputFile));
+		for (String s : lines) {
+			writer.write(s + "\n");
+		}
+		writer.close();
 	}
 
-	reader.close();
+	public void splitCsvFile(int quantity, String newDirectory) throws IOException {
+		// create files
+		CsvWriter[] trainfiles = new CsvWriter[quantity];
+		CsvWriter[] testfiles = new CsvWriter[quantity];
 
-	for (int i = 0; i < quantity; i++) {
-	    new CsvManipulator(newDirectory + "train" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
-	    new CsvManipulator(newDirectory + "test" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
-	}
-	
-	for (int i = 0; i < quantity; i++) {
-	    trainfiles[i].finalize();
-	    testfiles[i].finalize();
-	}
-    }
+		File f = new File(newDirectory);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
 
-    private static int getMinuteFromLine(String input) {
-	String[] splitDate = input.split(",")[2].split("-");
-	String[] splitTime = input.split(",")[3].split(":");
+		for (int i = 0; i < quantity; i++) {
+			trainfiles[i] = new CsvWriter(newDirectory + "train" + i + ".csv");
+			testfiles[i] = new CsvWriter(newDirectory + "test" + i + ".csv");
+		}
 
-	int result = 0;
-	
-	System.out.println(input);
+		BufferedReader reader = new BufferedReader(new FileReader(_inputFile));
 
-	// Not exact values for minutes per day/month/year (too high)
-	result += (Integer.parseInt(splitDate[0]) - 2014) * 1440 + Integer.parseInt(splitDate[1]) * 44000 + Integer.parseInt(splitDate[2]) * 526000;
+		String line;
+		while ((line = reader.readLine()) != null) {
+			int val = _random.nextInt(quantity);
 
-	result += Integer.parseInt(splitTime[0]) * 60 + Integer.parseInt(splitTime[1]);
+			for (int i = 0; i < quantity; i++) {
+				if (i == val)
+					testfiles[val].addLine(line);
+				else
+					trainfiles[val].addLine(line);
+			}
+		}
 
-	return result;
+		reader.close();
 
-    }
-    
-    private static boolean andBoolArray(boolean[] input) {
-	for (boolean b : input) {
-	    if (!b)
-		return false;
-	}
-	return true;
-    }
-    
-    private static int getSmallestIndex(int[] input) {
-	int max = Integer.MAX_VALUE;
-	int index = 0;
-	for (int i = 0; i < input.length; i++) {
-	    if (input[i] < max) {
-		max = input[i];
-		index = i;
-	    }
-	}
-	return index;
-    }
+		for (int i = 0; i < quantity; i++) {
+			new CsvManipulator(newDirectory + "train" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
+			new CsvManipulator(newDirectory + "test" + i + ".csv").addColumnWithValue(0, "split", Integer.toString(i));
+		}
 
-    public static void mergeCsvFiles(String[] inputFiles, String outputFile) throws IOException {
-	// Merge in date order!
-	CsvWriter writer = new CsvWriter(outputFile, true);
-
-	BufferedReader[] readers = new BufferedReader[inputFiles.length];
-	String[] lines = new String[inputFiles.length];
-	boolean[] empty = new boolean[inputFiles.length];
-	int[] max = new int[inputFiles.length];
-
-	for (int i = 0; i < inputFiles.length; i++) {
-	    readers[i] = new BufferedReader(new FileReader(inputFiles[i]));
-	    
-	    readers[i].readLine(); // headers
-	    
-	    lines[i] = readers[i].readLine();
-	    
-	    // TODO: Work around for strange writing headers twice bug??!?!
-	    if (lines[i].split(",")[1].equals("name")) {
-		lines[i] = readers[i].readLine();
-	    }
-	    
-	    empty[i] = lines[i] == null;
-	    max[i] = empty[i] ? Integer.MAX_VALUE : getMinuteFromLine(lines[i]);
+		for (int i = 0; i < quantity; i++) {
+			trainfiles[i].finalize();
+			testfiles[i].finalize();
+		}
 	}
 
-	while (!andBoolArray(empty)) { // while at least one isn't empty
-	    int i = getSmallestIndex(max);
-	    writer.addLine(lines[i]);
-	    System.out.println("added + " + lines[i]);
-	    lines[i] = readers[i].readLine();
-	    
-	    if (lines[i] == null) {
-		empty[i] = true;
-		max[i] = Integer.MAX_VALUE;
-	    }
-	}
-	
-	writer.finalize();
+	private static int getMinuteFromLine(String input) {
+		String[] splitDate = input.split(",")[2].split("/|-");
+		String[] splitTime = input.split(",")[3].split(":");
 
-	for (Reader r : readers) {
-	    r.close();
-	}
-    }
+		int result = 0;
 
-    public static void main(String[] args) {
-    }
+		System.out.println(input);
+
+		// Not exact values for minutes per day/month/year (too high)
+		result += (Integer.parseInt(splitDate[0]) - 2014) * 1440 + Integer.parseInt(splitDate[1]) * 44000 + Integer.parseInt(splitDate[2]) * 526000;
+
+		result += Integer.parseInt(splitTime[0]) * 60 + Integer.parseInt(splitTime[1]);
+
+		return result;
+
+	}
+
+	private static boolean andBoolArray(boolean[] input) {
+		for (boolean b : input) {
+			if (!b)
+				return false;
+		}
+		return true;
+	}
+
+	private static int getSmallestIndex(int[] input) {
+		int max = Integer.MAX_VALUE;
+		int index = 0;
+		for (int i = 0; i < input.length; i++) {
+			if (input[i] < max) {
+				max = input[i];
+				index = i;
+			}
+		}
+		return index;
+	}
+
+	public static void mergeCsvFiles(String[] inputFiles, String outputFile) throws IOException {
+		// Merge in date order!
+		CsvWriter writer = new CsvWriter(outputFile, true);
+
+		BufferedReader[] readers = new BufferedReader[inputFiles.length];
+		String[] lines = new String[inputFiles.length];
+		boolean[] empty = new boolean[inputFiles.length];
+		int[] max = new int[inputFiles.length];
+
+		for (int i = 0; i < inputFiles.length; i++) {
+			readers[i] = new BufferedReader(new FileReader(inputFiles[i]));
+
+			readers[i].readLine(); // headers
+
+			lines[i] = readers[i].readLine();
+
+			empty[i] = lines[i] == null;
+			max[i] = empty[i] ? Integer.MAX_VALUE : getMinuteFromLine(lines[i]);
+		}
+
+		while (!andBoolArray(empty)) { // while at least one isn't empty
+			int i = getSmallestIndex(max);
+			writer.addLine(lines[i]);
+			System.out.println("added + " + lines[i]);
+			lines[i] = readers[i].readLine();
+
+			if (lines[i] == null) {
+				empty[i] = true;
+				max[i] = Integer.MAX_VALUE;
+			}
+		}
+
+		writer.finalize();
+
+		for (Reader r : readers) {
+			r.close();
+		}
+	}
+
+	public static void main(String[] args) {
+	}
 }

@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="lib/opencv-249.jar"/>
 	<classpathentry kind="lib" path="lib/weka.jar"/>
 	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
-	<classpathentry kind="lib" path="/home/romek/projects/timelapseweather/lib/dropbox-core-sdk-1.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
