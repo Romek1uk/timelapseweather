@@ -7,19 +7,33 @@
 \BOOKMARK [1][-]{section.2.2}{Data Gathering}{chapter.2}% 7
 \BOOKMARK [1][-]{section.2.3}{Time Lapse}{chapter.2}% 8
 \BOOKMARK [1][-]{section.2.4}{Machine Learning}{chapter.2}% 9
-\BOOKMARK [1][-]{section.2.5}{Choice of Tools}{chapter.2}% 10
-\BOOKMARK [0][-]{chapter.3}{Implementation}{}% 11
-\BOOKMARK [1][-]{section.3.1}{Machine Learning}{chapter.3}% 12
-\BOOKMARK [1][-]{section.3.2}{Gathering Image Data}{chapter.3}% 13
-\BOOKMARK [1][-]{section.3.3}{Sanity Checking}{chapter.3}% 14
-\BOOKMARK [0][-]{chapter.4}{Evaluation}{}% 15
-\BOOKMARK [1][-]{section.4.1}{Cross Validation}{chapter.4}% 16
-\BOOKMARK [1][-]{section.4.2}{Analysis of Classifiers}{chapter.4}% 17
-\BOOKMARK [1][-]{section.4.3}{Results}{chapter.4}% 18
-\BOOKMARK [0][-]{chapter.5}{Conclusions}{}% 19
-\BOOKMARK [1][-]{section.5.1}{Results}{chapter.5}% 20
-\BOOKMARK [1][-]{section.5.2}{Future Work}{chapter.5}% 21
-\BOOKMARK [1][-]{section.5.3}{Changes}{chapter.5}% 22
-\BOOKMARK [0][-]{section.5.3}{Bibliography}{}% 23
-\BOOKMARK [0][-]{chapter.6}{Appendices}{}% 24
-\BOOKMARK [0][-]{chapter.7}{Proposal}{}% 25
+\BOOKMARK [2][-]{subsection.2.4.1}{Random Forest}{section.2.4}% 10
+\BOOKMARK [2][-]{subsection.2.4.2}{Multilayer Perceptron}{section.2.4}% 11
+\BOOKMARK [2][-]{subsection.2.4.3}{J48}{section.2.4}% 12
+\BOOKMARK [1][-]{section.2.5}{Choice of Tools}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.5.1}{Programming Language}{section.2.5}% 14
+\BOOKMARK [2][-]{subsection.2.5.2}{Libraries}{section.2.5}% 15
+\BOOKMARK [2][-]{subsection.2.5.3}{Backups}{section.2.5}% 16
+\BOOKMARK [0][-]{chapter.3}{Implementation}{}% 17
+\BOOKMARK [1][-]{section.3.1}{Gathering Image Data}{chapter.3}% 18
+\BOOKMARK [2][-]{subsection.3.1.1}{Feature Extraction}{section.3.1}% 19
+\BOOKMARK [1][-]{section.3.2}{Data Storing}{chapter.3}% 20
+\BOOKMARK [1][-]{section.3.3}{Machine Learning}{chapter.3}% 21
+\BOOKMARK [1][-]{section.3.4}{Sanity Checking}{chapter.3}% 22
+\BOOKMARK [0][-]{chapter.4}{Evaluation}{}% 23
+\BOOKMARK [1][-]{section.4.1}{Cross Validation}{chapter.4}% 24
+\BOOKMARK [1][-]{section.4.2}{Description of Data}{chapter.4}% 25
+\BOOKMARK [2][-]{subsection.4.2.1}{Icon}{section.4.2}% 26
+\BOOKMARK [2][-]{subsection.4.2.2}{Cloud Cover}{section.4.2}% 27
+\BOOKMARK [2][-]{subsection.4.2.3}{Precipitation}{section.4.2}% 28
+\BOOKMARK [2][-]{subsection.4.2.4}{Temperature}{section.4.2}% 29
+\BOOKMARK [1][-]{section.4.3}{Analysis of Classifiers}{chapter.4}% 30
+\BOOKMARK [2][-]{subsection.4.3.1}{Random Forest}{section.4.3}% 31
+\BOOKMARK [2][-]{subsection.4.3.2}{J48}{section.4.3}% 32
+\BOOKMARK [2][-]{subsection.4.3.3}{Multilayer Perceptron}{section.4.3}% 33
+\BOOKMARK [1][-]{section.4.4}{Overall Results}{chapter.4}% 34
+\BOOKMARK [0][-]{chapter.5}{Conclusions}{}% 35
+\BOOKMARK [1][-]{section.5.1}{Future Work}{chapter.5}% 36
+\BOOKMARK [1][-]{section.5.2}{Changes}{chapter.5}% 37
+\BOOKMARK [0][-]{section.5.2}{Bibliography}{}% 38
+\BOOKMARK [0][-]{chapter.6}{Appendices}{}% 39
