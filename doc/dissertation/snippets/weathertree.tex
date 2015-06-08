@@ -1,0 +1,17 @@
+\tikzstyle{block}=[rectangle, draw, text width = 5em, text centered, rounded corners, minimum height = 3em]
+\tikzstyle{block question}=[block, fill=red!20]
+\tikzstyle{block answer}=[block, fill=blue!20]
+\tikzstyle{blocklabel}=[midway]
+
+\begin{forest}
+	[Is average brightness higher than 75\%?, block question
+		[Is contrast high?, block question, edge label={node[blocklabel, left]{yes}}
+        	    [Sun, block answer, edge label={node[blocklabel, left]{yes}}]
+        	    [Snow, block answer, edge label={node[blocklabel, right]{no}}]		
+		]
+		[Is average hue blue?, block question, edge label={node[blocklabel, right]{no}}
+		    [Rain, block answer, edge label={node[blocklabel, left]{yes}}]
+		    [Cloud, block answer, edge label={node[blocklabel, right]{no}}]
+	    ]
+    ]
+\end{forest}

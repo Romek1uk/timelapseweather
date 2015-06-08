@@ -10,6 +10,7 @@ help:
 	@echo "make all      construct everything, clean directory and display estimated word count"
 	@echo "make count    display an estimated word count"
 	@echo "make clean    remove all remakeable files"
+	@echo "make fast     cleans and makes with a single iteration"
 	@echo "make editor   open zathura and vim to edit dissertation"
 	@echo
 
@@ -20,6 +21,9 @@ diss.pdf:	${DISS}
 	bibtex diss
 	pdflatex diss
 	bibtex diss
+	pdflatex diss.tex
+
+fast:
 	pdflatex diss.tex
 
 makefile.txt:	Makefile
@@ -38,6 +42,7 @@ clean:
 	rm -f diss.ps *.dvi *.aux *.log *.err
 	rm -f core *~ *.lof *.toc *.blg *.bbl
 	rm -f makefile.txt
+	rm -f ./snippets/*.aux
 
 view: 
 	zathura "$@" 2>/dev/null diss.pdf&

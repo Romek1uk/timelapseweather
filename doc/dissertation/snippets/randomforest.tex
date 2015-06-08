@@ -1,0 +1,80 @@
+\tikzstyle{node}=[circle, draw, minimum size=13pt]
+\tikzstyle{untaken node}=[node, fill=blue!30]
+\tikzstyle{taken node}=[node, fill=red!50,]
+\begin{forest}
+[Input
+	[,taken node, edge={->, draw, line width=1pt, black}
+		[,taken node, edge={->, draw, line width=1pt, red}
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+			[,taken node, edge={->, draw, line width=1pt, red}
+			    [,taken node, edge={->, draw, line width=1pt, red}, name=x1]
+			    [,untaken node]			
+			]
+		]
+		[,untaken node
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]			
+			]
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+		]
+	]
+	[,taken node, edge={->, draw, line width=1pt, black}
+		[,untaken node
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+		]
+		[,taken node, edge={->, draw, line width=1pt, red}
+			[,taken node, edge={->, draw, line width=1pt, red}
+			    [,untaken node]
+			    [,taken node, edge={->, draw, line width=1pt, red}, name=x2]		
+			]
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+		]
+	]
+	[,taken node, edge={->, draw, line width=1pt, black}
+		[,untaken node, edge={->, draw, line width=1pt, red}
+			[,untaken node, edge={->, draw, line width=1pt, red}
+			    [,untaken node, edge={->, draw, line width=1pt, red}, name=x3
+				[$\sum$, draw, edge={->, draw, line width=1pt}, name=end, before drawing tree={x=0.5,y=-7cm}
+					[Output, edge={->, draw, line width=1pt}, before drawing tree={x=0.5,y=-8cm}]
+				]
+			    ]
+			    [,untaken node]		
+			]
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+		]
+		[,untaken node
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+			[,untaken node
+			    [,untaken node]
+			    [,untaken node]		
+			]
+		]
+	]
+    ]
+]
+\draw[->, line width=1pt](x1)--(end);
+\draw[->, line width=1pt](x2)--(end);
+\end{forest}

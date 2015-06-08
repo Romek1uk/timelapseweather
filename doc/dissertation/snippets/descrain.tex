@@ -1,0 +1,17 @@
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      ymin=0,
+      xtick={0,1.06,...,4.57},
+	ylabel=Percentage of Data,
+	xlabel=Precipitation (mm),
+    ]
+    \addplot
+    table[x=rain,y=p,col sep=comma]{./data/eval-desc-rain.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Precipitation data bar chart}
+  
+\end{figure}

@@ -1,0 +1,17 @@
+
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      xtick=data,
+      ymin=0,
+      ylabel=Percentage of Data,
+      xlabel=Weather Type,
+      xlabel near ticks,
+      x tick label style={rotate=45, anchor=north east, inner sep=0mm},
+      flexible xticklabels from table={./data/eval-desc-icon.csv}{icon}{col sep=comma},
+    ]
+    \addplot
+    table[x expr=\coordindex,y=p]{\icondesctable};
+    \end{axis}
+  \end{tikzpicture}
+

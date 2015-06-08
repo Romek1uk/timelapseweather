@@ -1,0 +1,17 @@
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      ymin=0,
+      xtick=data,
+	xlabel=Temperature (\celsius),
+	ylabel=Percentage of Data,
+	xtick={0.24,3.09,...,13.07}
+    ]
+    \addplot
+    table[x=temp,y=p,col sep=comma]{./data/eval-desc-temp.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Temperature data bar chart}
+\end{figure}

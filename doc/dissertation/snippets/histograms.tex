@@ -1,0 +1,118 @@
+ \scalebox{0.92}{\begin{tabular}{cc}
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Value,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+    ]
+    \addplot[
+      const plot,
+      color=red,
+      unbounded coords = discard
+    ]
+    table[x=x,y=rain-r,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=blue,
+      unbounded coords = discard
+    ]
+    table[x=x,y=rain-b,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=green,
+      unbounded coords = discard
+    ]
+    table[x=x,y=rain-g,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Rain};
+  \end{tikzpicture}&
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Value,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+      ymax=185000,
+    ]
+    \addplot[
+      const plot,
+      color=red,
+      unbounded coords = discard
+    ]
+    table[x=x,y=sun-r,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=blue,
+      unbounded coords = discard
+    ]
+    table[x=x,y=sun-b,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=green,
+      unbounded coords = discard
+    ]
+    table[x=x,y=sun-g,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Sun};
+  \end{tikzpicture}\\
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Value,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+      ymax=185000,
+    ]
+    \addplot[
+      const plot,
+      color=red,
+      unbounded coords = discard
+    ]
+    table[x=x,y=night-r,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=blue,
+      unbounded coords = discard
+    ]
+    table[x=x,y=night-b,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=green,
+      unbounded coords = discard
+    ]
+    table[x=x,y=night-g,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Night};
+  \end{tikzpicture}&
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Value,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+      ymax=185000,
+    ]
+    \addplot[
+      const plot,
+      color=red,
+      unbounded coords = discard
+    ]
+    table[x=x,y=snow-r,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=blue,
+      unbounded coords = discard
+    ]
+    table[x=x,y=snow-b,col sep=comma] {./data/prep-data.csv}; 
+    \addplot[
+      const plot,
+      color=green,
+      unbounded coords = discard
+    ]
+    table[x=x,y=snow-g,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Snow};
+  \end{tikzpicture}\\
+  \end{tabular}
+}

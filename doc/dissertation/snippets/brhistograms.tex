@@ -1,0 +1,71 @@
+ \scalebox{0.92}{\begin{tabular}{cc}
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Brightness,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+      ymax=150000,
+    ]
+    \addplot[
+      const plot,
+      color=black,
+      draw=black,
+    ]
+    table[x=x,y=rain-br,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Rain};
+  \end{tikzpicture}&
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Brightness,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+      ymax=150000,
+    ]
+    \addplot[
+      const plot,
+      color=black,
+      draw=black,
+    ]
+    table[x=x,y=sun-br,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Sun};
+  \end{tikzpicture}\\
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Brightness,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+      ymax=150000,
+    ]
+    \addplot[
+      const plot,
+      color=black,
+      draw=black,
+    ]
+    table[x=x,y=night-br,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Night};
+  \end{tikzpicture}&
+  \begin{tikzpicture}
+    \begin{semilogyaxis}[
+      xlabel=Brightness,
+      ylabel=Pixels,
+      ylabel near ticks,
+      xlabel near ticks,
+      ymax=150000,
+    ]
+    \addplot[
+      const plot,
+      color=black,
+      draw=black,
+    ]
+    table[x=x,y=snow-br,col sep=comma] {./data/prep-data.csv}; 
+    \end{semilogyaxis}
+    \node[align=center] at (3.5cm,5cm){Snow};
+  \end{tikzpicture}\\
+  \end{tabular}
+}

@@ -1,0 +1,17 @@
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      ymin=0,
+	ylabel=Percentage of Data,
+	xlabel=Cloud Cover (\%),
+      xtick={0,20,...,100},
+	ybar
+    ]
+    \addplot
+    table[x=cover,y=p,col sep=comma]{./data/eval-desc-cloud.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Distribution of cloud cover percentages in the data set}
+  \label{fig:desccloud}
+\end{figure}
