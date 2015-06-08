@@ -116,67 +116,79 @@ public class DataDescriptor {
 	System.out.println("Median: " + inputs.get(inputs.size() / 2));
     }
 
-    public void describeTmeColumn(int col) throws IOException {
-   	BufferedReader reader = new BufferedReader(new FileReader(_fileName));
+    private static int timeStringToInt(String time) {
+	String[] ins = time.split(":");
+	return Integer.parseInt(ins[0]) * 3600 + Integer.parseInt(ins[1]) * 60 + Integer.parseInt(ins[2]);
+    }
 
-   	ArrayList<String> inputs = new ArrayList<>();
+    public static class TimeStringComparator implements Comparator<String> {
+	public int compare(String obj1, String obj2) {
+	    int a = timeStringToInt(obj1);
+	    int b = timeStringToInt(obj2);
+	    if (a == b) {
+		return 0;
+	    }
+	    if (a > b) {
+		return 1;
+	    }
+	    return -1;
+	}
+    }
 
-   	String line;
-   	reader.readLine(); // remove headers.
+    public void describeTimeColumn(int col) throws IOException {
+	BufferedReader reader = new BufferedReader(new FileReader(_fileName));
 
-   	while ((line = reader.readLine()) != null) {
-   	    String[] elements = line.split(",");
-   	    inputs.add(elements[col]);
-   	}
-   	reader.close();
+	ArrayList<String> inputs = new ArrayList<>();
 
-   	if (col == 8) { // Fixing crappy temp values
-   	    for (int i = 0; i < inputs.size(); i++) {
-   		inputs.set(i, String.valueOf(Double.parseDouble(inputs.get(i)) * (9.0 / 5.0) + 32.0));
-   	    }
-   	}
+	String line;
+	reader.readLine(); // remove headers.
 
-   	double sum = 0;
-   	inputs.sort(new IntStringComparator());
+	while ((line = reader.readLine()) != null) {
+	    String[] elements = line.split(",");
+	    inputs.add(elements[col]);
+	}
+	reader.close();
 
-   	// Generate range
-   	// Split into 10 buckets
-   	// Fill
-   	int[] buckets = new int[10];
-   	double minval = Double.parseDouble(inputs.get(0));
-   	double maxval = Double.parseDouble(inputs.get(inputs.size() - 1));
-   	double bucketsize = (maxval - minval) / 10.0;
+	long sum = 0;
+	inputs.sort(new TimeStringComparator());
 
-   	for (String s : inputs) {
-   	    double value = Double.parseDouble(s);
+	// Generate range
+	// Split into 10 buckets
+	// Fill
+	int[] buckets = new int[10];
+	int minval = timeStringToInt(inputs.get(0));
+	int maxval = timeStringToInt(inputs.get(inputs.size() - 1));
+	double bucketsize = (maxval - minval) / 10.0;
 
-   	    buckets[(int) ((Math.abs((value - minval) / maxval) * 10) % 10)]++;
+	for (String s : inputs) {
+	    int value = timeStringToInt(s);
 
-   	    sum += value;
-   	}
+	    buckets[(int) ((Math.abs((value - minval) / maxval) * 10) % 10)]++;
 
-   	for (int i = 0; i < 10; i++) {
-   	    System.out.println("(" + i + ") " + String.format("%.2f", minval + bucketsize * i) + " - " + String.format("%.2f", minval + bucketsize * (i + 1)) + ": " + buckets[i] + " (" + String.format("%.2f", buckets[i] * 100.0 / inputs.size()) + "%)");
-   	}
+	    sum += value;
+	}
 
-   	double mean = sum / inputs.size();
-   	double sumdifferencessquared = 0;
-   	for (String s : inputs) {
-   	    double value = Double.parseDouble(s);
+	for (int i = 0; i < 10; i++) {
+	    System.out.println("(" + i + ") " + String.format("%.2f", minval + bucketsize * i) + " - " + String.format("%.2f", minval + bucketsize * (i + 1)) + ": " + buckets[i] + " (" + String.format("%.2f", buckets[i] * 100.0 / inputs.size()) + "%)");
+	}
 
-   	    sumdifferencessquared += (mean - value) * (mean - value);
+	double mean = sum / inputs.size();
+	double sumdifferencessquared = 0;
+	for (String s : inputs) {
+	    int value = timeStringToInt(s);
 
-   	}
+	    sumdifferencessquared += (mean - value) * (mean - value);
 
-   	double variance = sumdifferencessquared / inputs.size();
+	}
 
-   	System.out.println("Variance: " + variance);
-   	System.out.println("Standard Deviation: " + Math.sqrt(variance));
-   	System.out.println("Mean: " + mean);
-   	System.out.println("Median: " + inputs.get(inputs.size() / 2));
-       }
+	double variance = sumdifferencessquared / inputs.size();
 
-    
+	System.out.println("Variance: " + variance);
+	System.out.println("Standard Deviation: " + Math.sqrt(variance));
+	System.out.println("Mean: " + mean);
+	System.out.println("Median: " + inputs.get(inputs.size() / 2));
+    }
+
     public DataDescriptor(String fileName) throws Exception {
 	_fileName = fileName;
     }
@@ -197,6 +209,14 @@ public class DataDescriptor {
 
 	System.out.println("-- TEMPERATURE--");
 	dr.describeContinuousColumn(8);
+	System.out.println();
+
+	System.out.println("-- SUNRISE--");
+	dr.describeTimeColumn(4);
+	System.out.println();
+
+	System.out.println("-- SUNSET--");
+	dr.describeTimeColumn(5);
 	System.out.println();
 
     }

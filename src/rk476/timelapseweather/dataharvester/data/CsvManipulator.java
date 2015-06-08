@@ -207,7 +207,6 @@ public class CsvManipulator {
 		while (!andBoolArray(empty)) { // while at least one isn't empty
 			int i = getSmallestIndex(max);
 			writer.addLine(lines[i]);
-			System.out.println("added + " + lines[i]);
 			lines[i] = readers[i].readLine();
 
 			if (lines[i] == null) {
@@ -224,5 +223,6 @@ public class CsvManipulator {
 	}
 
 	public static void main(String[] args) {
+	    new CsvManipulator("aa").splitCsvFile(5, directory);
 	}
 }

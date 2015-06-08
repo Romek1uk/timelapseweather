@@ -3,31 +3,31 @@ package rk476.timelapseweather.dataharvester.data;
 import rk476.timelapseweather.dataharvester.imagemetrics.Histogram;
 
 public class CsvData {
-	private String _name;
-	private String _date;
-	private String _time;
+	private String _name = "";
+	private String _date = "";
+	private String _time = "";
 
-	private String _actualIcon;
-	private String _actualSunrise;
-	private String _actualSunset;
-	private String _actualCloudCover;
-	private String _actualPrecipitation;
-	private String _actualTemperature;
-	private String _actualVisibility;
+	private String _actualIcon = "";
+	private String _actualSunrise = "";
+	private String _actualSunset = "";
+	private String _actualCloudCover = "";
+	private String _actualPrecipitation = "";
+	private String _actualTemperature = "";
+	private String _actualVisibility = "";
 
-	private String _predictedIcon;
-	private String _predictedSunrise;
-	private String _predictedSunset;
-	private String _predictedCloudCover;
-	private String _predictedPrecipitation;
-	private String _predictedTemperature;
-	private String _predictedVisibility;
+	private String _predictedIcon = "";
+	private String _predictedSunrise = "";
+	private String _predictedSunset = "";
+	private String _predictedCloudCover = "";
+	private String _predictedPrecipitation = "";
+	private String _predictedTemperature = "";
+	private String _predictedVisibility = "";
 
 	private Histogram _brightnessHistogram;
 	private Histogram _redHistogram;
 	private Histogram _greenHistogram;
 	private Histogram _blueHistogram;
-	private String _averagehue;
+	private String _averagehue = "";
 	
 	public String getPredictedPrecipitation() {
 		return _predictedPrecipitation;

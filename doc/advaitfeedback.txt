@@ -1,0 +1,2 @@
+Prep:
+- when you say "performance wasn't an issue" this is actually an opportunity for you to report some stuff in the evaluation chapter, you should be able to report the time and memory usage of your training algorithms, and then the running times of the classifications afterwards.
